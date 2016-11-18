@@ -1,10 +1,10 @@
 <TestCase>
 <Device>
         
-        <device3>FAB07</device3>
-        <device4>FAB08</device4>
-        <device1>FAB05</device1>
-        <device2>FAB06</device2>              
+    <device3>FAB07</device3>
+    <device4>FAB08</device4>
+    <device1>FAB05</device1>
+    <device2>FAB06</device2>              
 	<device5>CSW01</device5>
 	<device6>CSW02</device6>
 	<device7>CSW03</device7>
@@ -13,59 +13,9 @@
 	<device10>CSW06</device10>
 	<device11>CSW07</device11>
 	<device12>CSW08</device12>
-        <device13>ASW01</device13>
-        <device14>ASW02</device14>
-        <device15>ASW03</device15>
-        <device16>ASW04</device16>
+    <device13>ASW01</device13>
+    <device14>ASW02</device14>
+    <device15>ASW03</device15>
+    <device16>ASW04</device16>
 </Device>
-<Testcase1>
-	<FAB05>
-[['fab05:eth1','csw01:eth33'],['fab05:eth2','csw02:eth39'],['fab05:eth3','csw03:eth45'],['fab05:eth4','csw04:eth51'],['fab05:eth5','csw05:eth57'],['fab05:eth6','csw06:eth63'],['fab05:eth7','csw07:eth69'],['fab05:eth8','csw08:eth75']]
-	</FAB05>
-	<FAB06>
-[['fab06:eth9','csw01:eth34'],['fab06:eth10','csw02:eth40'],['fab06:eth11','csw03:eth46'],['fab06:eth12','csw04:eth52'],['fab06:eth13','csw05:eth58'],['fab06:eth14','csw06:eth64'],['fab06:eth15','csw07:eth70'],['fab06:eth16','csw08:eth76']]							
-	</FAB06>
-	<FAB07>
-[['fab07:eth17','csw01:eth35'],['fab07:eth18','csw02:eth41'],['fab07:eth19','csw03:eth47'],['fab07:eth20','csw04:eth53'],['fab07:eth21','csw05:eth59'],['fab07:eth22','csw06:eth65'],['fab07:eth23','csw07:eth71'],['fab07:eth24','csw08:eth77']]
-	</FAB07>
-	<FAB08>
-[['fab08:eth25','csw01:eth36'],['fab08:eth26','csw02:eth42'],['fab08:eth27','csw03:eth48'],['fab08:eth28','csw04:eth54'],['fab08:eth29','csw05:eth60'],['fab08:eth30','csw06:eth66'],['fab08:eth31','csw07:eth72'],['fab08:eth32','csw08:eth78']]				
-	</FAB08>
-	<CSW01>
-[['csw01:eth33','fab05:eth1'],['csw01:eth34','fab06:eth9'],['csw01:eth35','fab07:eth17'],['csw01:eth36','fab08:eth25'],['csw01:eth37','asw01:eth81'],['csw01:eth38','asw02:eth85']]			
-	</CSW01>
-	<CSW02>
-[['csw02:eth39','fab05:eth2'],['csw02:eth40','fab06:eth10'],['csw02:eth41','fab07:eth18'],['csw02:eth42','fab08:eth26'],['csw02:eth43','asw01:eth82'],['csw02:eth44','asw02:eth86']]  
-	</CSW02>
-	<CSW03>
-[['csw03:eth45','fab05:eth3'],['csw03:eth46','fab06:eth11'],['csw03:eth47','fab07:eth19'],['csw03:eth48','fab08:eth27'],['csw03:eth49','asw01:eth83'],['csw03:eth50','asw02:eth87']]
-	</CSW03>
-	<CSW04>
-[['csw04:eth51','fab05:eth4'],['csw04:eth52','fab06:eth12'],['csw04:eth53','fab07:eth20'],['csw04:eth54','fab08:eth28'],['csw04:eth55','asw01:eth84'],['csw04:eth56','asw02:eth88']]
-	</CSW04>
-	<CSW05>
-[['csw05:eth57','fab05:eth5'],['csw05:eth58','fab06:eth13'],['csw05:eth59','fab07:eth21'],['csw05:eth60','fab08:eth29'],['csw05:eth61','asw03:eth89'],['csw05:eth62','asw04:eth93']]
-	</CSW05>
-	<CSW06>
-[['csw06:eth63','fab05:eth6'],['csw06:eth64','fab06:eth14'],['csw06:eth65','fab07:eth22'],['csw06:eth66','fab08:eth30'],['csw06:eth67','asw03:eth90'],['csw06:eth68','asw04:eth94']]
-	</CSW06>
-	<CSW07>
-[['csw07:eth69','fab05:eth7'],['csw07:eth70','fab06:eth15'],['csw07:eth71','fab07:eth23'],['csw07:eth72','fab08:eth31'],['csw07:eth73','asw03:eth91'],['csw07:eth74','asw04:eth95']]
-</CSW07>
-	<CSW08>
-[['csw08:eth75','fab05:eth8'],['csw08:eth76','fab06:eth16'],['csw08:eth77','fab07:eth24'],['csw08:eth78','fab08:eth32'],['csw08:eth79','asw03:eth92'],['csw08:eth80','asw04:eth96']]
-	</CSW08>
-	<ASW01>
-[['asw01:eth81','csw01:eth37'],['asw01:eth82','csw02:eth43'],['asw01:eth83','csw03:eth49'],['asw01:eth84','csw04:eth55']]
-	</ASW01>
-	<ASW02>
-[['asw02:eth85','csw01:eth38'],['asw02:eth86','csw02:eth44'],['asw02:eth87','csw03:eth50'],['asw02:eth88','csw04:eth56']]
-	</ASW02>
-	<ASW03>
-[['asw03:eth89','csw05:eth61'],['asw03:eth90','csw06:eth67'],['asw03:eth91','csw07:eth73'],['asw03:eth92','csw08:eth79']]
-	</ASW03>
-	<ASW04>
-[['asw04:eth93','csw05:eth62'],['asw04:eth94','csw06:eth68'],['asw04:eth95','csw07:eth74'],['asw04:eth96','csw08:eth80']]
-</ASW04>
-</Testcase1>
 </TestCase>

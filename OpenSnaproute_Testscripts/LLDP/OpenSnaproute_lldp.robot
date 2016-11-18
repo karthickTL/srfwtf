@@ -50,9 +50,9 @@ TC1:Enabling the Interface
     stateup  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}  ${interface_dict}
 
 TC1:Verify LLDP
-     lldpNeighborInfo  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${device_list}  ${fab}  ${csw}  ${asw}  ${interface_dict}
+     lldpNeighborInfo  ${device_all}  ${path}  ${sheet_name}  ${fab_count}  ${csw_count}  ${asw_count}  ${device_list}  ${fab}  ${csw}  ${asw}  ${interface_dict}
 
 TC1:Enable the LLDP 
-    enablelldp  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}
-
+    ${out}=  enablelldp  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}
+    Should Be True  ${out}
 

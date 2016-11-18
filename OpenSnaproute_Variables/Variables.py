@@ -162,3 +162,8 @@ fab=["device1","device2","device3","device4"]
 csw=["device5","device6","device7","device8","device9","device10","device11","device12"]
 asw=["device13","device14","device15","device16"]
 
+
+path = '/home/openswitch2/Downloads/LSNC_Lab_Access_NSI_for_TerraLogic.xlsx'
+sheet_name="NSI"
+
+
