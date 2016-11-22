@@ -89,15 +89,6 @@ def Connect(device):
 
 
 
-def curl_connect(device) :
-    device_name=Device_parser(device)
-    device_Info = Get_deviceInfo(device_name)
-    ip_address = device_Info[1]
-    swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
-    show =FlexSwitchShow (ip_address, 8080)
-    return swtch
-    #CREATED(FAILED)
-    #print json.dumps(createBGPv4_Neighbor)
 
 
 '''
@@ -221,66 +212,6 @@ def parse_device(device="") :
         device_name=parsedInfo['TestCase']['Device']
         return device_name
 
-
-
-
-
-def assignip(mode,fab_devices,csw_devices,asw_devices,subnet,fab=[],csw=[],asw=[],interface_dict={},interface_ip_dict={}) :
-    list1=[]
-    if mode == "no" :
-        for i in range(0,int(fab_devices)) :
-            list1.append(fab[i])
-        for i in range(0,int(csw_devices)) :
-            list1.append(csw[i])
-        for i in range(0,int(asw_devices)) :
-            list1.append(asw[i])
-        for i in range(len(list1)):
-            port = []
-            interface_ip=[]
-            device = list1[i]
-            device_name=Device_parser(device)
-            log.info("login to "+device_name+" and configure IP address")
-            device_Info = Get_deviceInfo(device_name)
-            ip_address = device_Info[1]
-            swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
-            for j in range(len(list1)):
-                if device != list1[j] :
-                    device_ip=device+"_"+list1[j]+"_interface_ip "
-                    device_interface=device+"_"+list1[j]+"_eth"    
-                    if device_ip in interface_ip_dict.keys() and device_interface in interface_dict.keys():
-                        create_IPv4Intf=swtch.createIPv4Intf(interface_dict[device_interface],interface_ip_dict[device_ip]+subnet,AdminState='UP')
-                        port.append(interface_dict[device_interface])
-                        interface_ip.append(interface_ip_dict[device_ip]+subnet)
-                        #print json.dumps(create_IPv4Intf)
-            checkip(list1[i],port,interface_ip) 
-    if mode == "yes":
-        for i in fab:
-            list1.append(i)
-        for i in csw:
-            list1.append(i)
-        for i in asw:
-            list1.append(i)
-        for i in range(len(list1)):
-            port = []
-            interface_ip=[]
-            device = list1[i]
-            device_name=Device_parser(device)
-            device_Info = Get_deviceInfo(device_name)
-            ip_address = device_Info[1]
-            swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
-            for j in range(len(list1)):
-                if device != list1[j] :
-                    device_ip=device+"_"+list1[j]+"_interface_ip "
-                    device_interface=device+"_"+list1[j]+"_eth"    
-                    if device_ip in interface_ip_dict.keys() and device_interface in interface_dict.keys():
-                        
-                        create_IPv4Intf=swtch.createIPv4Intf(interface_dict[device_interface],interface_ip_dict[device_ip]+subnet,AdminState='UP')
-                        port.append(interface_dict[device_interface])
-                        interface_ip.append(interface_ip_dict[device_ip]+subnet)
-                        #print json.dumps(create_IPv4Intf)
-            checkip(list1[i],port,interface_ip)
-                        #print json.dumps(create_IPv4Intf)
-                                
 
 
 
@@ -555,109 +486,6 @@ def lldpNeighborInfo(mode,fab_devices,csw_devices,asw_devices,devices=[],fab=[],
         if "Fail" in Result:
                     raise testfail.testFailed("LLDP neighbor information does not matches with the given information\n") 
 
-
-
-
-def checkip(device,port=[],interface_ip=[]):
-        count=0
-        device_name=Device_parser(device)
-        connectionInfo=Connect(device)
-        connectionInfo.sendline("snap_cli")
-        connectionInfo.expect(">")
-        connectionInfo.sendline("enable")  
-        connectionInfo.expect("#")
-        connectionInfo.sendline("show run")  
-        connectionInfo.expect("#")
-        result= connectionInfo.before         
-        log.details(result)
-        fd = open("sample.txt","w+")
-        fd.write(result)
-        fd.close()
-        f = open("sample.txt","r") 
-        line = f.readlines()
-        for i in range (0,len(port)):
-            for eachline in range (len(line)):
-                if port[i] in  line[eachline]:
-                    if interface_ip[i] in line[eachline+1] :
-                        count = count+1
-        os.remove("sample.txt")
-        if count == len(port):
-            log.success("IP address is configured and verified on "+device_name)
-        else :
-            log.failure("IP address is not configured correctly on "+device_name)
-           
-           
-
-
-
-def checkstate(device,port=[]):
-        count=0
-        device_name=Device_parser(device)
-        connectionInfo=Connect(device)
-        connectionInfo.sendline("snap_cli")
-        connectionInfo.expect(">")
-        connectionInfo.sendline("enable")  
-        connectionInfo.expect("#")
-        connectionInfo.sendline("show ip interface")  
-        connectionInfo.expect("#")
-        result= connectionInfo.before         
-        log.details(result)
-        fd = open("sample.txt","w+")
-        fd.write(result)
-        fd.close()
-        f = open("sample.txt","r") 
-        line = f.readlines()
-        pattern = r'\s*(\w*)\s*(\d*\.\d*\.)\s*(\S*).*'
-        for i in range (0,len(port)):
-            for eachline in range (len(line)):
-                match = re.search(pattern,line[eachline])
-                if match:
-                    if match.group(1) == port[i] and match.group(3) == "UP":
-                         count= count+1
-        os.remove("sample.txt")
-        if count == len(port):
-            log.success("port is UP on "+device_name)
-        else :
-            log.failure("port is not up on "+device_name)
-           
-
-   
-
-
-def checkstate1(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],interface_dict={}) :
-    list1=[]
-    if mode == "no" :
-        for i in range(0,int(fab_devices)) :
-            list1.append(fab[i])
-        for i in range(0,int(csw_devices)) :
-            list1.append(csw[i])
-        for i in range(0,int(asw_devices)) :
-            list1.append(asw[i])
-                        #print json.dumps(create_IPv4Intf)
-    if mode == "yes":
-        for i in fab:
-            list1.append(i)
-        for i in csw:
-            list1.append(i)
-        for i in asw:
-            list1.append(i)
-        
-    for i in range(len(list1)):
-            port = []
-            device = list1[i]
-            device_name=Device_parser(device)
-            connectionInfo=Connect(device)
-            connectionInfo.sendline("snap_cli")
-            connectionInfo.expect(">")
-            connectionInfo.sendline("enable")  
-            connectionInfo.expect("#")
-            for j in range(len(list1)):
-                if device != list1[j] :
-                    device_interface=device+"_"+list1[j]+"_eth"    
-                    if device_interface in interface_dict.keys():
-                        eth = interface_dict[device_interface]
-                        port.append(eth)
-            checkstate(device,port)
           
                       
 

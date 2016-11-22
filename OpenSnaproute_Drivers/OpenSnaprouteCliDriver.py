@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 '''
-Created on 3-Nov-2016
+Created on 20-Nov-2016
 
 Author : Terralogic team
 
 OpenSnaprouteCliDriver is the basic driver which will handle the OpenSnaproute functions.
 
 '''
+import xlrd
 import io
 import sys
 import os
@@ -14,8 +15,6 @@ import simplejson as json
 sys.path.append(os.path.abspath('../../py'))
 from flexswitchV2 import FlexSwitch
 from flexprintV2 import FlexSwitchShow
-
-
 
 import xmldict
 import pexpect
@@ -31,11 +30,925 @@ from robot.libraries.BuiltIn import BuiltIn
 global step
 
 
+'''
+[API Documentation] 
+#ID : OpenSnaproute_api_001
+#Name : CHECKPOINT()
+#API Feature details :
+#Print the Checkpoint
+'''
+def CHECKPOINT(string,device_id=''):
+    log.step("*** "+string)
+
 
 '''
 [API Documentation]
-#ID : ops_api_001
-#Name :  Connect API
+#ID : OpenSnaproute_api_002
+#Name :  Deviceparser API
+#API Feature details :
+#1  "Deviceparser" API Parses the "TestCase.params" file
+#2  Returns the device name                                     
+'''
+
+def Device_parser(device="") :
+    xml = open('OpenSnaproute.params').read()
+    parsedInfo = xmldict.xml_to_dict(xml)
+    if device!="":
+        device=str(device)
+        device_name=parsedInfo['TestCase']['Device'][device]
+        return device_name
+    else:
+        device_name=parsedInfo['TestCase']['Device']
+        return device_name
+
+
+'''
+[API Documentation] 
+#ID : OpenSnaproute_api_003
+#Name : Get_deviceInfo API
+#API Feature details :
+#1  "Get_deviceInfo" API opens the "device.params" file
+#2  Returns the information of the particular device in a list
+'''
+
+def Get_deviceInfo(device):
+    deviceparam=open('device.params').read()
+    deviceInfo=deviceparam.splitlines() 
+    for value in deviceInfo:
+        pattern=device
+        match=re.search(pattern,value)
+        if match:          
+            deviceList=value.split(',')
+            return deviceList
+
+
+
+'''
+[API Documentation]
+#ID : OpenSnaproute_api_04
+#Name :assignip
+#API Feature details :
+"Device_parser" API will assign the IPv4 address to the routers using SDK function
+''' 
+
+def assignip(mode,fab_devices,csw_devices,asw_devices,subnet,fab=[],csw=[],asw=[],interface_dict={},interface_ip_dict={}) :
+    list1=[]
+    c=0
+    var=0
+    if mode == "no" :
+        for i in range(0,int(fab_devices)) :
+            list1.append(fab[i])
+        for i in range(0,int(csw_devices)) :
+            list1.append(csw[i])
+        for i in range(0,int(asw_devices)) :
+            list1.append(asw[i])
+        for i in range(len(list1)):
+            need_count=0
+            received_count=0
+            device = list1[i]
+            device_name=Device_parser(device)
+            log.info("login to "+device_name+" and configure IP address")
+            device_Info = Get_deviceInfo(device_name)
+            ip_address = device_Info[1]
+            swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
+            for j in range(len(list1)):
+                if device != list1[j] :
+                    device_ip=device+"_"+list1[j]+"_interface_ip "
+                    device_interface=device+"_"+list1[j]+"_eth"    
+                    if device_ip in interface_ip_dict.keys() and device_interface in interface_dict.keys():
+                        need_count=need_count+1
+                        result = swtch.createIPv4Intf(interface_dict[device_interface],interface_ip_dict[device_ip]+subnet,AdminState='UP')
+                        if result.ok or result.status_code == 500:
+                            received_count=received_count+1
+                        else:
+                            log.failure ("Failed to Configure IP "+interface_dict[device_interface]+"on "+device_name) 
+            if need_count == received_count:
+                log.success("IP configured successfully on "+device_name)
+                c= c+1 
+    if mode == "yes":
+        for i in fab:
+            list1.append(i)
+        for i in csw:
+            list1.append(i)
+        for i in asw:
+            list1.append(i)
+        for i in range(len(list1)):
+            need_count=0
+            received_count=0
+            device = list1[i]
+            device_name=Device_parser(device)
+            log.info("login to "+device_name+" and configure IP address")
+            device_Info = Get_deviceInfo(device_name)
+            ip_address = device_Info[1]
+            swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
+            for j in range(len(list1)):
+                if device != list1[j] :
+                    device_ip=device+"_"+list1[j]+"_interface_ip "
+                    device_interface=device+"_"+list1[j]+"_eth"    
+                    if device_ip in interface_ip_dict.keys() and device_interface in interface_dict.keys():
+                        need_count=need_count+1
+                        result=swtch.createIPv4Intf(interface_dict[device_interface],interface_ip_dict[device_ip]+subnet,AdminState='UP')
+                        if result.ok or result.status_code == 500:
+                            received_count=received_count+1
+                        else:
+                            log.failure ("Failed to Configure IP "+interface_dict[device_interface]+"on "+device_name)
+
+            if need_count == received_count:
+               log.success("IP configured successfully on "+device_name)
+               c= c+1
+    if c == len(list1):
+        log.success("IP is configured successfully")
+        return True
+    else:
+        log.failure("IP is not configured")
+        return False
+
+
+
+'''
+[API Documentation]
+#ID : OpenSnaproute_api_05
+#Name :removeip
+#API Feature details :
+"Device_parser" API will delete the interfaces and IPv4 address from the routers using SDK function
+''' 
+                
+def removeip(mode,fab_devices,csw_devices,asw_devices,subnet,fab=[],csw=[],asw=[],interface_dict={},interface_ip_dict={}) :
+    list1=[]
+    c=0
+    if mode == "no" :
+        for i in range(0,int(fab_devices)) :
+            list1.append(fab[i])
+        for i in range(0,int(csw_devices)) :
+            list1.append(csw[i])
+        for i in range(0,int(asw_devices)) :
+            list1.append(asw[i])
+        for i in range(len(list1)):
+            need_count=0
+            received_count=0
+            device = list1[i]
+            device_name=Device_parser(device)
+            log.info("login to "+device_name+" and remove IP address")
+            device_Info = Get_deviceInfo(device_name)
+            ip_address = device_Info[1]
+            swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
+            for j in range(len(list1)):
+                if device != list1[j] :
+                    device_ip=device+"_"+list1[j]+"_interface_ip "
+                    device_interface=device+"_"+list1[j]+"_eth"    
+                    if device_ip in interface_ip_dict.keys() and device_interface in interface_dict.keys():
+                        need_count=need_count+1
+                        delete_IPv4Intf=swtch.deleteIPv4Intf(interface_dict[device_interface])
+                        if delete_IPv4Intf.status_code == 410:
+                            received_count=received_count+1
+                        else:
+                            log.failure( "Failed to delete IP "+interface_dict[device_interface]+"on "+device_name)
+            if need_count == received_count :
+                log.success("IP removed successfully on "+device_name)
+                c= c+1     
+    if mode == "yes":
+        for i in fab:
+            list1.append(i)
+        for i in csw:
+            list1.append(i)
+        for i in asw:
+            list1.append(i)
+        for i in range(len(list1)):
+            need_count=0
+            received_count=0
+            device = list1[i]
+            device_name=Device_parser(device)
+            device_Info = Get_deviceInfo(device_name)
+            log.info("login to "+device_name+" and remove IP address")
+            ip_address = device_Info[1]
+            swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
+            for j in range(len(list1)):
+                if device != list1[j] :
+                    device_ip=device+"_"+list1[j]+"_interface_ip "
+                    device_interface=device+"_"+list1[j]+"_eth"    
+                    if device_ip in interface_ip_dict.keys() and device_interface in interface_dict.keys():
+                        need_count=need_count+1
+                        delete_IPv4Intf=swtch.deleteIPv4Intf(interface_dict[device_interface])
+                        if delete_IPv4Intf.status_code == 410:
+                            received_count=received_count+1
+                        else:
+                            log.failure( "Failed to delete IP "+interface_dict[device_interface]+"on "+device_name)
+            if need_count == received_count :
+                log.success("IP removed successfully on "+device_name)
+                c= c+1
+    if c == len(list1):
+        log.success("IP removed successfully")
+        return True
+    else:
+        log.failure("IP not removed ")
+        return False
+
+
+
+
+'''
+[API Documentation]
+#ID : OpenSnaproute_api_06
+#Name :assignbgp
+#API Feature details :
+"Device_parser" API will assign the BGP IPv4 address to the routers using SDK function
+''' 
+
+def assignbgp(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],interface_ip_dict={},asnum={},router_id={}) :
+    list1=[]
+    neighbor=[]
+    peer_as=[]
+    c=0
+    if mode == "no" :
+        for i in range(0,int(fab_devices)) :
+            list1.append(fab[i])
+        for i in range(0,int(csw_devices)) :
+            list1.append(csw[i])
+        for i in range(0,int(asw_devices)) :
+            list1.append(asw[i])
+        for i in range(len(list1)):
+            need_count=0
+            received_count=0
+            neighbor=[]
+            peer_as=[]
+            device = list1[i]
+            device_name=Device_parser(device)
+            device_Info = Get_deviceInfo(device_name)
+            log.info("log-in to "+device_name+" and loading BGP configuration")
+            ip_address = device_Info[1]
+            swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
+            local=asnum[device]
+            Routerid=router_id[device]
+            swtch.updateBGPGlobal("default",ASNum=local,RouterId=Routerid)
+            for j in range(len(list1)):
+                peer=asnum[list1[j]]
+                if device != list1[j] :
+                    device_ip=list1[j]+"_"+device+"_interface_ip " 
+                    if device_ip in interface_ip_dict.keys() :
+                        need_count=need_count+1
+                        result=swtch.createBGPv4Neighbor("",interface_ip_dict[device_ip],PeerAS=peer,LocalAS=local)
+                        if result.ok or result.status_code == 500:
+                            received_count=received_count+1
+                        else:
+                            log.failure ("Failed to Configure BGP neighbor "+interface_ip_dict[device_ip]+"on "+device_name)
+            if need_count == received_count:
+                log.success("BGP is configured successfully on "+device_name)
+                c=c+1
+    if mode == "yes":
+        for i in fab:
+            list1.append(i)
+        for i in csw:
+            list1.append(i)
+        for i in asw:
+            list1.append(i)
+        for i in range(len(list1)):
+            need_count=0
+            received_count=0
+            device = list1[i]
+            device_name=Device_parser(device)
+            device_Info = Get_deviceInfo(device_name)
+            log.info("log-in to "+device_name+" and loading BGP configuration")
+            ip_address = device_Info[1]
+            swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
+            local=asnum[device]      
+            Routerid=router_id[device]
+            swtch.updateBGPGlobal("default",ASNum=local,RouterId=Routerid)
+            for j in range(len(list1)):
+                peer=asnum[list1[j]]
+                if device != list1[j] :
+                    device_ip=list1[j]+"_"+device+"_interface_ip " 
+                    if device_ip in interface_ip_dict.keys() :
+                      need_count=need_count+1
+                      result=swtch.createBGPv4Neighbor("",interface_ip_dict[device_ip],PeerAS=peer,LocalAS=local)
+                      if result.ok or result.status_code == 500:
+                            received_count=received_count+1
+                      else:
+                            log.failure ("Failed to Configure BGP neighbor "+interface_ip_dict[device_ip]+"on "+device_name)
+            if need_count == received_count:
+                log.success("BGP is configured successfully on "+device_name)
+                c=c+1
+    if c == len(list1):
+        log.success("BGP is configured successfully")
+        return True
+    else:
+        log.failure("BGP is not configured")
+        return False                            
+
+                                 
+'''
+[API Documentation]
+#ID : OpenSnaproute_api_07
+#Name :removebgp
+#API Feature details :
+"Device_parser" API will remove the bgp IPv4 neighbor address from the routers using SDK function
+''' 
+               
+def removebgp(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],interface_ip_dict={},asnum={},router_id={}) :
+    list1=[]
+    neighbor=[]
+    peer_as=[]
+    c=0
+    if mode == "no" :
+        for i in range(0,int(fab_devices)) :
+            list1.append(fab[i])
+        for i in range(0,int(csw_devices)) :
+            list1.append(csw[i])
+        for i in range(0,int(asw_devices)) :
+            list1.append(asw[i])
+        for i in range(len(list1)):
+            need_count=0
+            received_count=0
+            device = list1[i]
+            device_name=Device_parser(device)
+            device_Info = Get_deviceInfo(device_name)
+            log.info("log-in to "+device_name+" and removing BGP configuration")
+            ip_address = device_Info[1]
+            swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
+            local=asnum[device]
+            Routerid=router_id[device]
+            for j in range(len(list1)):
+                peer=asnum[list1[j]]
+                if device != list1[j] :
+                    device_ip=list1[j]+"_"+device+"_interface_ip " 
+                    if device_ip in interface_ip_dict.keys() :
+                        need_count=need_count+1
+                        removeBGPv4_Neighbor=swtch.deleteBGPv4Neighbor("",interface_ip_dict[device_ip])
+
+                        if removeBGPv4_Neighbor.status_code == 410:
+                            received_count=received_count+1
+                        else:
+                            log.failure( "Failed to remove BGP neighbor "+interface_ip_dict[device_ip]+"on "+device_name)
+            if need_count == received_count:
+                c=c+1
+                log.success("BGP is removed successfully on "+device_name)
+    if mode == "yes":
+        for i in fab:
+            list1.append(i)
+        for i in csw:
+            list1.append(i)
+        for i in asw:
+            list1.append(i)
+        for i in range(len(list1)):
+            need_count=0
+            received_count=0
+            device = list1[i]
+            device_name=Device_parser(device)
+            device_Info = Get_deviceInfo(device_name)
+            ip_address = device_Info[1]
+            log.info("log-in to "+device_name+" and removing BGP configuration")
+            swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
+            local=asnum[device]      
+            Routerid=router_id[device]
+            for j in range(len(list1)):
+                peer=asnum[list1[j]]
+                if device != list1[j] :
+                    device_ip=list1[j]+"_"+device+"_interface_ip " 
+                    if device_ip in interface_ip_dict.keys() :
+                      need_count=need_count+1
+                      removeBGPv4_Neighbor=swtch.deleteBGPv4Neighbor("",interface_ip_dict[device_ip])
+                      if removeBGPv4_Neighbor.status_code == 410:
+                            received_count=received_count+1
+                      else:
+                            log.failure( "Failed to remove BGP neighbor "+interface_ip_dict[device_ip]+"on "+device_name)
+            if need_count == received_count:
+                c=c+1
+                log.success("BGP is removed successfully on "+device_name)
+    if c == len(list1):
+        log.success("BGP is removed successfully")
+        return True
+    else:
+        log.failure("BGP is not removed ")
+        return False                    
+
+
+
+'''
+[API Documentation] 
+#ID : OpenSnaproute_api_08
+#Name : createPolicyCondition_name()
+#API Feature details :
+#configuring Policy condition
+'''           
+def createPolicyCondition_name(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],Condition_name='',ConditionType='',Protocol='',IpPrefix='',MaskLengthRange='',PrefixSet='') :
+    list1=[]
+    if mode == "no" :
+        for i in range(0,int(fab_devices)) :
+            list1.append(fab[i])
+        for i in range(0,int(csw_devices)) :
+            list1.append(csw[i])
+        for i in range(0,int(asw_devices)) :
+            list1.append(asw[i])
+    if mode == "yes":
+        for i in fab:
+            list1.append(i)
+        for i in csw:
+            list1.append(i)
+        for i in asw:
+            list1.append(i)
+    count =0    
+    for i in range(len(list1)):
+            port = []
+            device = list1[i]
+            device_name=Device_parser(device)
+            log.info("Loading into "+device_name)
+            device_Info = Get_deviceInfo(device_name)
+            ip_address = device_Info[1]
+            swtch = FlexSwitch (ip_address, 8080)
+            swtch1 = FlexSwitchShow (ip_address, 8080)
+            result=swtch.createPolicyCondition(Condition_name,ConditionType,Protocol,IpPrefix,MaskLengthRange,PrefixSet)
+            #result=swtch1.printPolicyConditionStates()
+            #log.details(result)
+            if result.ok or result.status_code == 500:
+                log.success("Policy Condition is created and verified on "+device_name)
+                count =count+1
+            else :
+                log.failure("Policy Condition is not created properly on "+device_name)
+    if count == len(list1):
+        log.success("Policy Condition is created ")
+        return True
+    else:
+        log.failure(" Policy Condition is not created ")
+        return False
+'''
+[API Documentation] 
+#ID : OpenSnaproute_api_09
+#Name : createPolicyStatement()
+#API Feature details :
+#configuring Policy statement
+'''            
+def createPolicyStatement(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],stmt_name='',Condition_name='',action='',matchconditions='') :
+    list1=[]
+    count =0
+    if mode == "no" :
+        for i in range(0,int(fab_devices)) :
+            list1.append(fab[i])
+        for i in range(0,int(csw_devices)) :
+            list1.append(csw[i])
+        for i in range(0,int(asw_devices)) :
+            list1.append(asw[i])
+                        #print json.dumps(create_IPv4Intf)
+    if mode == "yes":
+        for i in fab:
+            list1.append(i)
+        for i in csw:
+            list1.append(i)
+        for i in asw:
+            list1.append(i)
+    cond_name=[] 
+    cond_name.append(Condition_name)  
+    for i in range(len(list1)):
+            port = []
+            device = list1[i]
+            device_name=Device_parser(device)
+            log.info("Loading into "+device_name)
+            device_Info = Get_deviceInfo(device_name)
+            ip_address = device_Info[1]
+            swtch = FlexSwitch (ip_address, 8080)
+            result = swtch.createPolicyStmt(Name=stmt_name,Conditions=cond_name, Action=action,MatchConditions=matchconditions)
+            if result.ok or result.status_code == 500:
+                log.success("Policy statement is created and verified on "+device_name)
+                count =count+1
+            else :
+                log.failure("Policy statement is not created properly on "+device_name)
+    if count == len(list1):
+        log.success("Policy statement is created ")
+        return True
+    else:
+        log.failure(" Policy statement is not created ")
+        return False
+'''
+[API Documentation] 
+#ID : OpenSnaproute_api_010
+#Name :create_Policy_Definitions()
+#API Feature details :
+#configuring Policy Definition
+'''            
+def create_Policy_Definitions(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],stmt_name="",Pol_def_name="",priority="",matchtype="",policytype="") :
+    list1=[]
+    if mode == "no" :
+        for i in range(0,int(fab_devices)) :
+            list1.append(fab[i])
+        for i in range(0,int(csw_devices)) :
+            list1.append(csw[i])
+        for i in range(0,int(asw_devices)) :
+            list1.append(asw[i])
+    if mode == "yes":
+        for i in fab:
+            list1.append(i)
+        for i in csw:
+            list1.append(i)
+        for i in asw:
+            list1.append(i)
+    count =0
+    stmt_list=[{"Priority": int(priority), "Statement": str(stmt_name)}]
+    for i in range(len(list1)):
+            port = []
+            device = list1[i]
+            device_name=Device_parser(device)
+            log.info("Loading into "+device_name)
+            device_Info = Get_deviceInfo(device_name)
+            ip_address = device_Info[1]
+            swtch = FlexSwitch (ip_address, 8080)
+            result = swtch.createPolicyDefinition(str(Pol_def_name),int(priority),stmt_list , MatchType=str(matchtype),PolicyType=policytype)
+            if result.ok or result.status_code == 500:
+                log.success("Policy Definitions is created and verified on "+device_name)
+                count =count+1
+            else :
+                log.failure("Policy Definitions is not created properly on "+device_name)
+    if count == len(list1):
+        log.success("Policy Definitions is created ")
+        return True
+    else:
+        log.failure(" Policy Definitions is not created ")
+        return False
+
+'''
+[API Documentation] 
+#ID : OpenSnaproute_api_011
+#Name : flap_state()
+#API Feature details :
+#To make interface state UP and Down
+'''                 
+                   
+def flap_state(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],interface_dict={}) :
+    list1=[]
+    if mode == "no" :
+        for i in range(0,int(fab_devices)) :
+            list1.append(fab[i])
+        for i in range(0,int(csw_devices)) :
+            list1.append(csw[i])
+        for i in range(0,int(asw_devices)) :
+            list1.append(asw[i])
+                        #print json.dumps(create_IPv4Intf)
+    if mode == "yes":
+        for i in fab:
+            list1.append(i)
+        for i in csw:
+            list1.append(i)
+        for i in asw:
+            list1.append(i)
+    need_count=0
+    received_count=0
+    c=0    
+    for i in range(len(list1)):
+            device = list1[i]
+            device_name=Device_parser(device)
+            device_Info = Get_deviceInfo(device_name)
+            ip_address = device_Info[1]
+            swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
+            for j in range(len(list1)):
+                if device != list1[j] :
+                    device_interface=device+"_"+list1[j]+"_eth"    
+                    if device_interface in interface_dict.keys():
+                        need_count=need_count+1
+                        log.info("Setting "+interface_dict[device_interface]+" DOWN")
+                        result=swtch.updatePort(interface_dict[device_interface],AdminState='DOWN')
+                        if result.ok:
+                            c=c+1
+                        time.sleep(1)
+                        log.info("Setting "+interface_dict[device_interface]+" UP")
+                        result=swtch.updatePort(interface_dict[device_interface],AdminState='UP')
+                        if result.ok:
+                            received_count=received_count+1#print json.dumps(create_IPv4Intf)
+    
+
+    if need_count == received_count and need_count==c and c==received_count:
+       log.success("flap state is done")
+       return True
+    else :
+       log.failure("flap state is not done")
+       return False   
+'''
+[API Documentation] 
+#ID : OpenSnaproute_api_012
+#Name : createBGPGlobal()
+#API Feature details :
+#create BGP global functionality
+'''                    
+def createBGPGlobal(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],asnum={},router_id={},redistribution='',pol_name=''):
+    list1=[]
+    c=0
+    if mode == "no" :
+        for i in range(0,int(fab_devices)) :
+            list1.append(fab[i])
+        for i in range(0,int(csw_devices)) :
+            list1.append(csw[i])
+        for i in range(0,int(asw_devices)) :
+            list1.append(asw[i])
+                        #print json.dumps(create_IPv4Intf)
+    if mode == "yes":
+        for i in fab:
+            list1.append(i)
+        for i in csw:
+            list1.append(i)
+        for i in asw:
+            list1.append(i)
+    redistribute=''
+    if redistribution !='':
+        redistribute=[{"Sources": redistribution, "Policy": pol_name}]
+    for i in range(len(list1)):
+            need_count=0
+            b=0
+            device = list1[i]
+            device_name=Device_parser(device)
+            device_Info = Get_deviceInfo(device_name)
+            ip_address = device_Info[1]
+            swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
+            local=asnum[device]      
+            Routerid=router_id[device]
+            log.info("log-in to "+device_name+" and configuring router")
+            result=swtch.updateBGPGlobal("default",ASNum=local,RouterId=Routerid,Redistribution=redistribute)
+            if result.ok or result.status_code == 500:
+               c=c+1
+               log.success("router is configured on "+device_name)
+            else:
+               log.failure ("Failed to Configure router on "+device_name) 
+    if c==len(list1):
+        log.success("router is configured")
+        return True
+    else:
+        log.info ("Failed to Configure router on "+device_name) 
+        return False
+
+'''
+[API Documentation] 
+#ID : OpenSnaproute_api_013
+#Name :neighbor_state_all()
+#API Feature details :
+#Check neighbor state in a devices
+'''                 
+def neighbor_state_all(state,mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],interface_ip_dict={}):
+    list1=[]
+    if mode == "no" :
+        for i in range(0,int(fab_devices)) :
+            list1.append(fab[i])
+        for i in range(0,int(csw_devices)) :
+            list1.append(csw[i])
+        for i in range(0,int(asw_devices)) :
+            list1.append(asw[i])
+    if mode == "yes":
+        for i in fab:
+            list1.append(i)
+        for i in csw:
+            list1.append(i)
+        for i in asw:
+            list1.append(i)
+    device_count=0
+    for i in list1:
+        flag=0
+        device=i;
+    	device_name=Device_parser(device)
+    	log.step('Checking for '+state+' in '+device_name)
+    	log.info('Log-in into '+device_name+' to check for '+state+' state')
+        device_name=Device_parser(device)
+        device_Info = Get_deviceInfo(device_name)
+        ip_address = device_Info[1]
+        swtch = FlexSwitch (ip_address, 8080)
+        Output = swtch.getAllBGPv4NeighborStates() 
+        log.details(Output)
+    	match_count=0
+    	rec_count=0
+    	dev_count=0
+    	list2=[]
+        flag=0
+    	for eachline in Output:
+                    for j in range(len(list1)):
+                        if device != list1[j] :
+                            dev_count = dev_count+1
+                            device_ip=list1[j]+"_"+device+"_interface_ip "
+                            if device_ip in interface_ip_dict.keys() :
+                                if list1[j] not in list2:
+                                    list2.append(list1[j])
+                                ip_actual=interface_ip_dict[device_ip]
+                                ip_actual="'"+ip_actual+"'"
+                                if (ip_actual) in str(eachline) and "'SessionState': 6" in str(eachline):
+                                        rec_count=rec_count+1
+                                        flag=1
+                                        break
+        if rec_count == len(list2) and flag==1:
+            log.success("Required "+state+" state is achieved in "+device_name)
+            device_count=device_count+1
+        else:
+            log.failure("Required "+state+" state is not achieved on "+device_name)
+    if device_count == len(list1):
+        log.success("Neighborship is get "+state+" state on all devices")
+        return True
+    else:
+        log.failure("Neighborship is not get "+state+" state on all devices")
+        return False
+'''
+[API Documentation] 
+#ID : OpenSnaproute_api_014
+#Name :particular_device_neighbor_check()
+#API Feature details :
+#Check neighbor state in a particular device
+'''   
+def particular_device_neighbor_check(state,source_device,destination_device,interface_ip_dict={}):
+    log.step('Checking for '+state+' in '+Device_parser(source_device))
+    log.info('Log-in into '+Device_parser(source_device)+' to check for '+state+' state')
+    device_name=Device_parser(source_device)
+    log.step('Checking for '+state+' in '+device_name)
+    log.info('Log-in into '+device_name+' to check for '+state+' state')
+    device_name=Device_parser(source_device)
+    device_Info = Get_deviceInfo(device_name)
+    ip_address = device_Info[1]
+    swtch = FlexSwitch (ip_address, 8080)
+    Output = swtch.getAllBGPv4NeighborStates() 
+    log.details(Output)
+    flag=0
+    device_ip=destination_device+"_"+source_device+"_interface_ip " 
+    ip_actual=interface_ip_dict[device_ip]
+    ip_actual="'"+ip_actual+"'"
+    for eachline in Output:
+               if state == 'Estab':
+                   if (ip_actual) in str(eachline) and "'SessionState': 6" in str(eachline):
+                       flag = 1
+                       break
+               if state != 'Estab':
+                   if (ip_actual) in str(eachline) and "'SessionState': 6" not in str(eachline):
+                        flag = 1
+                        break
+    if flag == 1:
+        log.success("neighbor ip "+ip_actual+ "is in "+state+" state")
+        return True
+    else:
+        log.failure("neighbor ip "+ip_actual+ "is not in "+state+" state")
+        return False  
+'''
+[API Documentation] 
+#ID : OpenSnaproute_api_015
+#Name : trigger()
+#API Feature details :
+#Trigger Link failure
+'''   
+def trigger(device,ip,interface_ip_dict={},interface_dict={}):
+            list1=[]
+            device_name=Device_parser(device)
+            device_Info = Get_deviceInfo(device_name)
+            ip_address = device_Info[1]
+            port = []
+            flag = 1
+            count =0
+            log.info("trigger link failure is verifying on "+device_name+" for the address "+ip)
+            swtch = FlexSwitch (ip_address, 8080)
+            while(flag==1):
+               result = bestpath(swtch,ip)
+               log.details(result)
+               output=str(result)
+               pattern=r"[\{u'A-z:,\s*0-9./+\}-]*NextHopIntRef':\s*u'(\w+)[',\s*u'A-z:0-9]*Ip':\s*u'(\d+.\d+.\d+.\d+).*"
+               match=re.match(pattern,str(result))
+               if result:
+
+                 if match:
+                    add=match.group(1)
+                    log.info("BestPath port : "+add) 
+                    eth=match.group(1)
+                    state(device,eth,state="DOWN")
+                    time.sleep(5)
+                    port.append(eth)
+                    count = count+1
+                    
+            
+               else :
+                  flag = 0
+                  log.info("No bestpath found")
+                  log.info("bringing up all the shut down interfaces")
+                  for i in range(0,len(port)):
+                      state(device,port[i],state='UP')             
+
+            if count > 1:
+                log.success("Trigger Link Failure is verified")
+                return True
+            else :
+                log.failure("No Best/alternate Path Found")
+                return False
+'''
+[API Documentation] 
+#ID : OpenSnaproute_api_016
+#Name : bestpath()
+#API Feature details :
+#Find Best path
+'''  
+def bestpath(swtch,ip):
+            result = swtch.getIPv4RouteState(ip)
+            if result.ok:
+               return result.json()
+            else :
+               return 0
+'''
+[API Documentation] 
+#ID : OpenSnaproute_api_017
+#Name :bestpath()
+#API Feature details :
+#create or remove loopback interface
+'''  
+def loopback(mode,device,loopback_name,ip,subnet):
+  device_name=Device_parser(device)
+  device_Info = Get_deviceInfo(device_name)
+  ip_address = device_Info[1]
+  if mode == 'config':
+     log.info("Creating Logical address on  "+device_name)
+     swtch = FlexSwitch (ip_address, 8080)
+     result = swtch.createLogicalIntf(loopback_name)
+     if result.ok or result.status_code == 500:
+         result = swtch.createIPv4Intf(loopback_name,ip+subnet)
+         if result.ok or result.status_code == 500:
+             log.success("logical interface is created on  "+device_name)
+             return True
+         else:
+             log.failure("logical interface is not created")
+             return False
+     else:
+         log.failure("logical interface is not created")
+         return False
+  if mode == 'remove':
+     log.info("Removing Logical address on  "+device_name)
+     swtch = FlexSwitch (ip_address, 8080)
+     result = swtch.deleteIPv4Intf(loopback_name)
+     if result.status_code == 410:
+         result = swtch.deleteLogicalIntf(loopback_name)
+         if result.status_code == 410:
+             log.success("logical interface is removed on  "+device_name)
+             return True
+         else:
+             log.failure("logical interface is not created")
+             return False
+     else:
+         log.failure("logical interface is not created")
+         return False
+'''
+[API Documentation] 
+#ID : OpenSnaproute_api_018
+#Name : reset_bgp_neighbor()
+#API Feature details :
+#Reset/clear the BGP with IP address
+'''  
+def reset_bgp_neighbor(device,ip):
+
+     device_name=Device_parser(device)
+     device_Info = Get_deviceInfo(device_name)
+     ip_address = device_Info[1]
+     log.info("Reset/clear BGP process on  "+device_name)
+     swtch = FlexSwitch (ip_address, 8080)
+     result = swtch.executeResetBGPv4NeighborByIPAddr(ip)
+     if result.ok:
+         log.success("BGP process reseted on  "+device_name)
+         return True
+     else:
+         log.failure("BGP Process no reseted")
+         return False
+'''
+[API Documentation] 
+#ID : OpenSnaproute_api_019
+#Name : best_ip()
+#API Feature details :
+#gives a best path ip
+'''  
+def best_ip(device,ip,interface_ip_dict={},interface_dict={}):
+            device_name=Device_parser(device)
+            device_Info = Get_deviceInfo(device_name)
+            ip_address = device_Info[1]
+            port = []
+            flag = 1
+            count =0
+            log.info("Checking for best path port on  "+device_name+" for the address "+ip)
+            swtch = FlexSwitch (ip_address, 8080)    
+            result = bestpath(swtch,ip)
+            if result:
+                pattern=r"[\{u'A-z:,\s*0-9./+\}-]*NextHopIntRef':\s*u'(\w+)[',\s*u'A-z:0-9]*Ip':\s*u'(\d+.\d+.\d+.\d+).*"
+                match=re.match(pattern,str(result))
+                if match :
+                    log.success("best path "+match.group(2))
+                    return True
+            else :
+                log.failure("no best path found")
+                return False
+            
+
+'''
+[API Documentation] 
+#ID : OpenSnaproute_api_020
+#Name : state()
+#API Feature details :
+#To make interface state UP and Down
+'''                 
+def state(device,port,state=''):
+            device_name=Device_parser(device)
+            device_Info = Get_deviceInfo(device_name)
+            ip_address = device_Info[1]
+            swtch = FlexSwitch (ip_address, 8080)
+            if state=="DOWN":
+                   log.info("shutdown the interface "+port+" on "+device_name)
+                   create_IPv4Intf=swtch.updatePort(port,AdminState='DOWN')
+            if state=="UP": 
+                   log.info("Making the interface "+port+" UP on "+device_name)
+                   create_IPv4Intf=swtch.updatePort(port,AdminState='UP')   
+
+
+'''
+[API Documentation]
+#ID : ops_api_021
+#Name :  Connect()
 #API Feature details :
 #1 "Connect" API Connects to the particular device.
 '''
@@ -87,64 +1000,13 @@ def Connect(device):
     return connectionInfo
     
 
-
-
-def curl_connect(device) :
-    device_name=Device_parser(device)
-    device_Info = Get_deviceInfo(device_name)
-    ip_address = device_Info[1]
-    swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
-    show =FlexSwitchShow (ip_address, 8080)
-    return swtch
-    #CREATED(FAILED)
-    #print json.dumps(createBGPv4_Neighbor)
-
-
-'''
-[API Documentation]
-#ID : ops_api_002
-#Name :  Deviceparser API
-#API Feature details :
-#1  "Deviceparser" API Parses the "TestCase.params" file
-#2  Returns the device name                                     
-'''
-
-def Device_parser(device="") :
-    xml = open('OpenSnaproute.params').read()
-    parsedInfo = xmldict.xml_to_dict(xml)
-    if device!="":
-        device=str(device)
-        device_name=parsedInfo['TestCase']['Device'][device]
-        return device_name
-    else:
-        device_name=parsedInfo['TestCase']['Device']
-        return device_name
-
-
 '''
 [API Documentation] 
-#ID : ops_api_003
-#Name : Get_deviceInfo API
+#ID : OpenSnaproute_api_022
+#Name : CASE()
 #API Feature details :
-#1  "Get_deviceInfo" API opens the "device.params" file
-#2  Returns the information of the particular device in a list
+#Print the CASE info
 '''
-
-def Get_deviceInfo(device):
-    deviceparam=open('device.params').read()
-    deviceInfo=deviceparam.splitlines() 
-    for value in deviceInfo:
-        pattern=device
-        match=re.search(pattern,value)
-        if match:          
-            deviceList=value.split(',')
-            return deviceList
-
-
-
-def CHECKPOINT(string,device_id=''):
-    log.step("*** "+string)
-
 def CASE(string,device_id=''):
     log.case("<<< "+string)
 
@@ -153,7 +1015,7 @@ def CASE(string,device_id=''):
 
 '''
 [API Documentation]
-#ID : ops_api_0018
+#ID : ops_api_0023
 #Name : delay(delay,message)
 #API Feature details :
 #1 "delay" API makes the process wait for the Specified time.
@@ -178,7 +1040,7 @@ def delay(delay='',message=''):
 
 '''
 [API Documentation] 
-#ID : ops_api_0022
+#ID : ops_api_0024
 #Name : getTestCaseParams(testcase,test)
 #API Feature details :
 #1 API "getTestCaseParams" Parses the "OpenSnaproute.params" file.
@@ -204,7 +1066,7 @@ def getTestCaseParams(testcase="",test=""):
 
 '''
 [API Documentation]
-#ID : ops_api_0024
+#ID : ops_api_0025
 #Name :parse_device(device) 
 #API Feature details :
 "parse_device" API opens and reads the PARAM(OpenSnaproute.params) File and Fetches and returns the Device information after converting into a Dictionary.
@@ -225,69 +1087,13 @@ def parse_device(device="") :
 
 
 
-def assignip(mode,fab_devices,csw_devices,asw_devices,subnet,fab=[],csw=[],asw=[],interface_dict={},interface_ip_dict={}) :
-    list1=[]
-    if mode == "no" :
-        for i in range(0,int(fab_devices)) :
-            list1.append(fab[i])
-        for i in range(0,int(csw_devices)) :
-            list1.append(csw[i])
-        for i in range(0,int(asw_devices)) :
-            list1.append(asw[i])
-        for i in range(len(list1)):
-            port = []
-            interface_ip=[]
-            device = list1[i]
-            device_name=Device_parser(device)
-            log.info("login to "+device_name+" and configure IP address")
-            device_Info = Get_deviceInfo(device_name)
-            ip_address = device_Info[1]
-            swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
-            for j in range(len(list1)):
-                if device != list1[j] :
-                    device_ip=device+"_"+list1[j]+"_interface_ip "
-                    device_interface=device+"_"+list1[j]+"_eth"    
-                    if device_ip in interface_ip_dict.keys() and device_interface in interface_dict.keys():
-                        create_IPv4Intf=swtch.createIPv4Intf(interface_dict[device_interface],interface_ip_dict[device_ip]+subnet,AdminState='UP')
-                        port.append(interface_dict[device_interface])
-                        interface_ip.append(interface_ip_dict[device_ip]+subnet)
-                        #print json.dumps(create_IPv4Intf)
-            checkip(list1[i],port,interface_ip) 
-    if mode == "yes":
-        for i in fab:
-            list1.append(i)
-        for i in csw:
-            list1.append(i)
-        for i in asw:
-            list1.append(i)
-        for i in range(len(list1)):
-            port = []
-            interface_ip=[]
-            device = list1[i]
-            device_name=Device_parser(device)
-            device_Info = Get_deviceInfo(device_name)
-            ip_address = device_Info[1]
-            swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
-            for j in range(len(list1)):
-                if device != list1[j] :
-                    device_ip=device+"_"+list1[j]+"_interface_ip "
-                    device_interface=device+"_"+list1[j]+"_eth"    
-                    if device_ip in interface_ip_dict.keys() and device_interface in interface_dict.keys():
-                        
-                        create_IPv4Intf=swtch.createIPv4Intf(interface_dict[device_interface],interface_ip_dict[device_ip]+subnet,AdminState='UP')
-                        port.append(interface_dict[device_interface])
-                        interface_ip.append(interface_ip_dict[device_ip]+subnet)
-                        #print json.dumps(create_IPv4Intf)
-            checkip(list1[i],port,interface_ip)
-                        #print json.dumps(create_IPv4Intf)
-                                
-
-
-
-
-
-
-
+'''
+[API Documentation]
+#ID : ops_api_0026
+#Name :enablelldp(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[]) 
+#API Feature details :
+"Enabling the LLDP Globally
+'''
 def enablelldp(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[]) :
     list1=[]
     if mode == "no" :
@@ -314,7 +1120,13 @@ def enablelldp(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[]) :
             showrun(list1[i],'LLDP','lldp enable')
 
 
-
+'''
+[API Documentation]
+#ID : ops_api_0027
+#Name :statedown(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],interface_dict={})
+#API Feature details :
+"Making interface state down
+'''
 def statedown(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],interface_dict={}) :
     list1=[]
     log.info("Making the interfaces state DOWN")
@@ -349,6 +1161,13 @@ def statedown(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],inte
                         #print json.dumps(create_IPv4Intf)
 
 
+'''
+[API Documentation]
+#ID : ops_api_0028
+#Name :stateup(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],interface_dict={})
+#API Feature details :
+"Making interface state up
+'''
 def stateup(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],interface_dict={}) :
     list1=[]
     log.info("Making the interfaces state UP")
@@ -400,7 +1219,7 @@ def stateup(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],interf
 
 '''
 [API Documentation]
-#ID : ops_api_0034
+#ID : ops_api_0029
 #Name : lldpNeighborInfo()
 #API Feature details :
 #1 " lldpNeighborInfo" API verifies the LLDP neighbour information.
@@ -555,114 +1374,17 @@ def lldpNeighborInfo(mode,fab_devices,csw_devices,asw_devices,devices=[],fab=[],
         if "Fail" in Result:
                     raise testfail.testFailed("LLDP neighbor information does not matches with the given information\n") 
 
-
-
-
-def checkip(device,port=[],interface_ip=[]):
-        count=0
-        device_name=Device_parser(device)
-        connectionInfo=Connect(device)
-        connectionInfo.sendline("snap_cli")
-        connectionInfo.expect(">")
-        connectionInfo.sendline("enable")  
-        connectionInfo.expect("#")
-        connectionInfo.sendline("show run")  
-        connectionInfo.expect("#")
-        result= connectionInfo.before         
-        log.details(result)
-        fd = open("sample.txt","w+")
-        fd.write(result)
-        fd.close()
-        f = open("sample.txt","r") 
-        line = f.readlines()
-        for i in range (0,len(port)):
-            for eachline in range (len(line)):
-                if port[i] in  line[eachline]:
-                    if interface_ip[i] in line[eachline+1] :
-                        count = count+1
-        os.remove("sample.txt")
-        if count == len(port):
-            log.success("IP address is configured and verified on "+device_name)
-        else :
-            log.failure("IP address is not configured correctly on "+device_name)
-           
-           
-
-
-
-def checkstate(device,port=[]):
-        count=0
-        device_name=Device_parser(device)
-        connectionInfo=Connect(device)
-        connectionInfo.sendline("snap_cli")
-        connectionInfo.expect(">")
-        connectionInfo.sendline("enable")  
-        connectionInfo.expect("#")
-        connectionInfo.sendline("show ip interface")  
-        connectionInfo.expect("#")
-        result= connectionInfo.before         
-        log.details(result)
-        fd = open("sample.txt","w+")
-        fd.write(result)
-        fd.close()
-        f = open("sample.txt","r") 
-        line = f.readlines()
-        pattern = r'\s*(\w*)\s*(\d*\.\d*\.)\s*(\S*).*'
-        for i in range (0,len(port)):
-            for eachline in range (len(line)):
-                match = re.search(pattern,line[eachline])
-                if match:
-                    if match.group(1) == port[i] and match.group(3) == "UP":
-                         count= count+1
-        os.remove("sample.txt")
-        if count == len(port):
-            log.success("port is UP on "+device_name)
-        else :
-            log.failure("port is not up on "+device_name)
-           
-
-   
-
-
-def checkstate1(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],interface_dict={}) :
-    list1=[]
-    if mode == "no" :
-        for i in range(0,int(fab_devices)) :
-            list1.append(fab[i])
-        for i in range(0,int(csw_devices)) :
-            list1.append(csw[i])
-        for i in range(0,int(asw_devices)) :
-            list1.append(asw[i])
-                        #print json.dumps(create_IPv4Intf)
-    if mode == "yes":
-        for i in fab:
-            list1.append(i)
-        for i in csw:
-            list1.append(i)
-        for i in asw:
-            list1.append(i)
-        
-    for i in range(len(list1)):
-            port = []
-            device = list1[i]
-            device_name=Device_parser(device)
-            connectionInfo=Connect(device)
-            connectionInfo.sendline("snap_cli")
-            connectionInfo.expect(">")
-            connectionInfo.sendline("enable")  
-            connectionInfo.expect("#")
-            for j in range(len(list1)):
-                if device != list1[j] :
-                    device_interface=device+"_"+list1[j]+"_eth"    
-                    if device_interface in interface_dict.keys():
-                        eth = interface_dict[device_interface]
-                        port.append(eth)
-            checkstate(device,port)
           
                       
 
 
-           
+'''
+[API Documentation]
+#ID : ops_api_0030
+#Name : showrun()
+#API Feature details :
+#1 " To verify features
+'''           
 
 def showrun(device,dec,*string):
         count=0
@@ -687,8 +1409,16 @@ def showrun(device,dec,*string):
         os.remove("sample.txt")
         if count == len(string):
             log.success(desc+" is configured and verified successfully")
-             
-   
+     
+
+        
+'''
+[API Documentation]
+#ID : ops_api_0030
+#Name : host()
+#API Feature details :
+#1 " To rename host
+'''   
 def host(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],hostname={}):  
 
     list1=[]
@@ -724,3 +1454,4 @@ def host(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],hostname=
             
 
  
+                   
