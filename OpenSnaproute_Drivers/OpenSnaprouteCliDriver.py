@@ -1325,13 +1325,180 @@ def host(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],hostname=
             log.info("log into "+device_name+" to specify Hostname")
             connectionInfo.sendline(hostname[list1[i]])
             connectionInfo.expect("#")
-            
-            
-            
-            
-            
-            
-            
+'''
+[API Documentation]
+#ID : ops_api_0029
+#Name : lldpNeighborInfo()
+#API Feature details :
+#1 Parse the XL sheet for LLDP Testcase
+'''
 
+def parse(path,sheet_name):
+
+    workbook=xlrd.open_workbook(path)
+    sheet=workbook.sheet_by_name(sheet_name)
+    device=[]
+    devices=[]
+    li=[]
+    keys = [sheet.cell(0, col_index).value for col_index in xrange(sheet.ncols)]
+    dictionary = {}
+    column=2
+    col=1
+    for row_index in  xrange(1, sheet.nrows):
+       cell = sheet.cell(row_index,col)   
+       if sheet.cell(row_index,column).value == '':
+            continue
+       for col_index in xrange(sheet.ncols):
+            if keys[col_index]=='Device2' or keys[col_index]=='Device1' :
+                key = (sheet.cell(row_index, col_index).value).lower()
+                if sheet.cell(row_index, col_index).value not in device:
+                    device.append((sheet.cell(row_index, col_index).value).lower())
+            if keys[col_index]=='Port1':
+                value = sheet.cell(row_index, col_index).value
+                dictionary[str(key)] = (str(value)).lower()
+            if keys[col_index]=='Port2': 
+                value = sheet.cell(row_index, col_index).value
+                dictionary[str(key)] = (str(value)).lower() 
+                li.append(dictionary)
+                dictionary={}
+    return li          
+'''
+[API Documentation]
+#ID : ops_api_0030
+#Name : lldpNeighborInfo_V2()
+#API Feature details :
+#1 " lldpNeighborInfo" API verifies the LLDP neighbour information using XLsheet.
+'''
+            
+def lldpNeighborInfo_V2(mode,path,sheet_name,fab_devices,csw_devices,asw_devices,devices=[],fab=[],csw=[],asw=[],interface_dict={}):
+    Result=[]
+    lldp = parse(path,sheet_name)
+    rise=0
+    list1=[]
+    if mode == "yes":
+        for i in fab:
+            list1.append(i)
+        for i in csw:
+            list1.append(i)
+        for i in asw:
+            list1.append(i)
+        for i in range(0,len(list1)):
+            device_n=list1[i]
+            rise = 0
+            for device in list1:
+                if device != device_n :
+                    device_interface=device_n+"_"+device+"_eth"    
+                    if device_interface in interface_dict.keys():
+                        rise=rise+1
+            device_name=Device_parser(device_n)
+            device_Info = Get_deviceInfo(device_name)
+            ip_address = device_Info[1]
+            swtch = FlexSwitchShow (ip_address, 8080)
+            test_name = BuiltIn().get_variable_value("${TEST_NAME}")      
+            log.step('Checking LLDP Neighbor Information For The Device: '+device_name)
+            result = swtch.printLLDPIntfStates()
+            log.details(result)
+            fd = open("sample.txt","w+")
+            fd.write(result)
+            fd.close()
+            f = open("sample.txt","r")
+            j=0
+            count=0
+            line = f.readlines() 
+            for eachline in line :
+                pattern1 = r'\s*([A-z0-9]*)\s*\d*\s*\d*\s*\d*\s*True\s*([A-z0-9]*)\s+[A-z0-9:]*\s*([A-z0-9]*)\s*([A-z0-9]*)\s*[0-9A-z.]*\s*F.*'
+                match = re.match(pattern1,eachline)
+                if match :
+                    devicename=device_name.lower()
+                    neighborportid = match.group(3) 
+                    portid = match.group(1)
+                    destination = match.group(4)
+                    destination_devicename = destination.lower()
+                    for lldp_s in lldp:
+                           if (devicename in str(lldp_s) and destination_devicename in str(lldp_s)):
+                                 if (neighborportid == lldp_s[destination_devicename] and portid == lldp_s[devicename]):
+                                     log.info("port "+portid+" of "+devicename+" Is Connected To Port "+neighborportid+" of "+destination_devicename)
+                                     count=count+1
+                                     break
+            if count==rise and count !=0:
+                log.success('LLDP Neighbor Information Matched With The Given Information\n')
+                Result.append("Pass")
+            else:
+                log.failure('LLDP Neighbor Information Does Not Matches With The Given Information\n')
+                Result.append("Fail") 
+            count =0
+        if "Fail" in Result:
+                raise testfail.testFailed("LLDP neighbor information does not matches with the given information\n")
+
+    if mode=='no':
+        list1=[]
+        list2=[]
+        j=0
+        rise=0
+        count=0
+        for i in range(0,int(fab_devices)) :
+            list1.append(fab[i])
+        for i in range(0,int(csw_devices)) :
+            list1.append(csw[i])
+        for i in range(0,int(asw_devices)) :
+            list1.append(asw[i])
+        for i in range(0,len(list1)):
+                device_n=list1[i]
+                for device in list1:
+                    if device != device_n :
+                        device_interface=device_n+"_"+device+"_eth"    
+                        if device_interface in interface_dict.keys():
+                            list2.append(device)
+                            rise=rise+1
+                device_name=Device_parser(device_n)
+                device_Info = Get_deviceInfo(device_name)
+                ip_address = device_Info[1]
+                swtch = FlexSwitchShow (ip_address, 8080)
+                test_name = BuiltIn().get_variable_value("${TEST_NAME}")      
+                log.step('Checking LLDP Neighbor Information For The Device: '+device_name)
+                result = swtch.printLLDPIntfStates()  
+                log.details(result)
+                fd = open("sample.txt","w+")
+                fd.write(result)
+                fd.close()
+                f = open("sample.txt","r")
+                line = f.readlines()
+                devicename=device_name.lower()
+                for eachline in line :
+                        
+                        pattern1 = r'\s*([A-z0-9]*)\s*\d*\s*\d*\s*\d*\s*True\s*([A-z0-9]*)\s+[A-z0-9:]*\s*([A-z0-9]*)\s*([A-z0-9]*)\s*[0-9A-z.]*\s*F.*'
+                        match = re.match(pattern1,eachline)
  
-                   
+                        if match :
+                            neighborportid = match.group(3) 
+                            portid = match.group(1)
+                            destination = match.group(4)
+                            destination_devicename = destination.lower()
+                        for device in list2:
+                          flag = 0
+                          j=0
+                          dest_name=Device_parser(device)
+                          dest_name=dest_name.lower()
+                          if match:
+                             for lldp_s in lldp:
+                               if (devicename in str(lldp_s) and destination_devicename in str(lldp_s)):
+                                 if (neighborportid == lldp_s[destination_devicename] and portid == lldp_s[devicename] and dest_name.lower() == destination_devicename):
+                                     log.info("port "+portid+" of "+devicename+" Is Connected To Port "+neighborportid+" of "+destination_devicename)
+                                     count=count+1
+                                     flag = 1
+                                     break
+                          if flag == 1:
+                              flag=0
+                              break
+                if count==rise and count !=0:
+                    log.success('LLDP Neighbor Information Matched With The Given Information\n')
+                    Result.append("Pass")
+                else:
+                    log.failure('LLDP Neighbor Information Does Not Matches With The Given Information\n')
+                    Result.append("Fail") 
+                count =0
+                rise = 0
+                list2=[]
+        if "Fail" in Result:
+                    raise testfail.testFailed("LLDP neighbor information does not matches with the given information\n") 
+

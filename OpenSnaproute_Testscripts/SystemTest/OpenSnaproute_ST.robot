@@ -21,8 +21,8 @@ Library  Collections
 
 Library	  /home/${USER}/Downloads/srfwtf/OpenSnaproute_Drivers/OpenSnaprouteCliDriver.py  
 Variables   /home/${USER}/Downloads/srfwtf/OpenSnaproute_Variables/ST_Variables.py
-Test Setup   Loading Basic Configuration
-Test Teardown   Deleting Basic Configuration
+Suite Setup   Loading Basic Configuration
+Suite Teardown   Deleting Basic Configuration
 #Library   FlexSwitch.py  ${ip_1}  ${port}  WITH NAME  swtch1  
 *** Variables ***
 ${USER}  openswitch
@@ -40,18 +40,14 @@ Testcase1
 
 Testcase2
     [Documentation]  Trigger link failure and link recovery. 
-    CHECKPOINT  2.1 Flaping the state
-    Enabling the Interface
-    CHECKPOINT  2.2 Policy creation
+    CHECKPOINT  2.1 Policy creation
     Policy
     Sleep  30s
-    CHECKPOINT  2.3 Checking trigger link failure
+    CHECKPOINT  2.2 Checking trigger link failure
     TC2:Verify Trigger link failure
 
 Testcase3
     [Documentation]  clear BGP Process
-    CHECKPOINT  Flaping the state 
-    Enabling the Interface
     CHECKPOINT  Policy creation
     Policy
     CHECKPOINT  3.1 Creating a loopback
@@ -132,8 +128,8 @@ TC3:remove_loopback
 #*****************************Test Setup Keywords**************************************
 
 Loading Basic Configuration
-#    CHECKPOINT   flaping the state and verifying
-#    Enabling the Interface   
+    CHECKPOINT  Flaping the state 
+    Enabling the Interface   
     CHECKPOINT   load base configuration on devices and verifying
     Load-Base-configuration
 
