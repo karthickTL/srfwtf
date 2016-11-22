@@ -11,7 +11,7 @@ Documentation    Test Suite ID 		: 	LINKED_IN_ST_01
 ...
 ...              Abstract 		:       This test suite examines the basic functionalities of OpenSnaproute using "Dockers Setup"
 ...
-...              Test-cases List 	:	1.Verify IPv4 BGP on all devices	
+...              Test-cases List 	:	1.Verify IPv4 BGP on all devices.	
 ...              			: 	2.Manually clear BGP routing process. Measure convergence time and verify system status.
 ...              			: 	3.Trigger link failure and link recovery. Measure convergence time and verify system. status.
 

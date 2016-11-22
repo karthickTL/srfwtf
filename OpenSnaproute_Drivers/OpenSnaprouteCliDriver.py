@@ -4,7 +4,7 @@ Created on 20-Nov-2016
 
 Author : Terralogic team
 
-OpenSnaprouteCliDriver is the basic driver which will handle the Opensnaproute functions.
+OpenSnaprouteCliDriver is the basic driver which will handle the OpenSnaproute functions.
 
 '''
 import xlrd
