@@ -19,13 +19,13 @@ Documentation    Test Suite ID 		: 	LINKED_IN_ST_01
 Library  OperatingSystem
 Library  Collections
 
-Library	  /home/${USER}/OpenSnaproute_ST/OpenSnaproute_Drivers/OpenSnaprouteCliDriver.py  
-Variables   /home/${USER}/OpenSnaproute_ST/OpenSnaproute_Variables/ST_Variables.py
+Library	  /home/${USER}/Downloads/srfwtf/OpenSnaproute_Drivers/OpenSnaprouteCliDriver.py  
+Variables   /home/${USER}/Downloads/srfwtf/OpenSnaproute_Variables/ST_Variables.py
 Test Setup   Loading Basic Configuration
 Test Teardown   Deleting Basic Configuration
-Library   FlexSwitch.py  ${ip_1}  ${port}  WITH NAME  swtch1  
+#Library   FlexSwitch.py  ${ip_1}  ${port}  WITH NAME  swtch1  
 *** Variables ***
-${USER}  opensnaproute
+${USER}  openswitch
 ${ip_1}  172.17.0.2
 ${port}  8080
 

@@ -276,8 +276,8 @@ PolicyType='ALL'
 
 
 #TriggerLink Failure
-device="device5"
-destination_network="10.0.8.0/31"
+device="device1"
+destination_network="10.0.4.0/31"
 
 
 #clear BGP process

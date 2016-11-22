@@ -603,12 +603,12 @@ def flap_state(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],int
                         need_count=need_count+1
                         log.info("Setting "+interface_dict[device_interface]+" DOWN")
                         result=swtch.updatePort(interface_dict[device_interface],AdminState='DOWN')
-                        if result.ok:
+                        if result.ok or result.status_code == 500:
                             c=c+1
                         time.sleep(1)
                         log.info("Setting "+interface_dict[device_interface]+" UP")
                         result=swtch.updatePort(interface_dict[device_interface],AdminState='UP')
-                        if result.ok:
+                        if result.ok or result.status_code == 500:
                             received_count=received_count+1#print json.dumps(create_IPv4Intf)
     
 
@@ -1096,6 +1096,7 @@ def parse_device(device="") :
 '''
 def enablelldp(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[]) :
     list1=[]
+    count=0
     if mode == "no" :
         for i in range(0,int(fab_devices)) :
             list1.append(fab[i])
@@ -1114,112 +1115,25 @@ def enablelldp(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[]) :
             device = list1[i]
             device_name=Device_parser(device)
             device_Info = Get_deviceInfo(device_name)
+            log.info("Log-in to "+device_name+" to enable LLDP")
             ip_address = device_Info[1]
             swtch = FlexSwitch (ip_address, 8080)
-            swtch.updateLLDPGlobal("default",Enable="True",TranmitInterval=30)
-            showrun(list1[i],'LLDP','lldp enable')
+            result=swtch.updateLLDPGlobal("default",Enable="True",TranmitInterval=30)
+            if result.ok or result.status_code == 500:
+                log.success("LLDP is enabled on "+device_name)
+                count=count+1
+     
+    if count == len(list1):
+        log.success("LLDP is enabled ")
+        return True
+    else :
+        log.failure("LLDP is not enabled ")
+        return False
 
 
 '''
 [API Documentation]
 #ID : ops_api_0027
-#Name :statedown(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],interface_dict={})
-#API Feature details :
-"Making interface state down
-'''
-def statedown(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],interface_dict={}) :
-    list1=[]
-    log.info("Making the interfaces state DOWN")
-    if mode == "no" :
-        for i in range(0,int(fab_devices)) :
-            list1.append(fab[i])
-        for i in range(0,int(csw_devices)) :
-            list1.append(csw[i])
-        for i in range(0,int(asw_devices)) :
-            list1.append(asw[i])
-                       #print json.dumps(create_IPv4Intf)               
-    if mode == "yes":
-        for i in fab:
-            list1.append(i)
-        for i in csw:
-            list1.append(i)
-        for i in asw:
-            list1.append(i)
-        
-    for i in range(len(list1)):
-            device = list1[i]
-            device_name=Device_parser(device)
-            device_Info = Get_deviceInfo(device_name)
-            ip_address = device_Info[1]
-            swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
-            for j in range(len(list1)):
-                if device != list1[j] :
-                    device_interface=device+"_"+list1[j]+"_eth"    
-                    if device_interface in interface_dict.keys():
-                        create_IPv4Intf=swtch.updatePort(interface_dict[device_interface],AdminState='DOWN')
-                        
-                        #print json.dumps(create_IPv4Intf)
-
-
-'''
-[API Documentation]
-#ID : ops_api_0028
-#Name :stateup(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],interface_dict={})
-#API Feature details :
-"Making interface state up
-'''
-def stateup(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],interface_dict={}) :
-    list1=[]
-    log.info("Making the interfaces state UP")
-    if mode == "no" :
-        for i in range(0,int(fab_devices)) :
-            list1.append(fab[i])
-        for i in range(0,int(csw_devices)) :
-            list1.append(csw[i])
-        for i in range(0,int(asw_devices)) :
-            list1.append(asw[i])
-                        #print json.dumps(create_IPv4Intf)
-    if mode == "yes":
-        for i in fab:
-            list1.append(i)
-        for i in csw:
-            list1.append(i)
-        for i in asw:
-            list1.append(i)
-        
-    for i in range(len(list1)):
-            port = []
-            device = list1[i]
-            device_name=Device_parser(device)
-            device_Info = Get_deviceInfo(device_name)
-            ip_address = device_Info[1]
-            connectionInfo=Connect(device)
-            connectionInfo.sendline("snap_cli")
-            connectionInfo.expect(">")
-            connectionInfo.sendline("enable")  
-            connectionInfo.expect("#")
-            connectionInfo.sendline("config")  
-            connectionInfo.expect("#")
-            for j in range(len(list1)):
-                if device != list1[j] :
-                    device_interface=device+"_"+list1[j]+"_eth"    
-                    if device_interface in interface_dict.keys():
-     
-                        eth = interface_dict[device_interface]
-                        port.append(eth)
-                        eth = eth[:3] + ' ' + eth[3:]
-                        connectionInfo.sendline("interface "+eth)  
-                        connectionInfo.expect("#")
-                        connectionInfo.sendline("no shutdown")  
-                        connectionInfo.expect("#")          
-                        connectionInfo.sendline("apply")  
-                        connectionInfo.expect("#")
-                        
-
-
-'''
-[API Documentation]
-#ID : ops_api_0029
 #Name : lldpNeighborInfo()
 #API Feature details :
 #1 " lldpNeighborInfo" API verifies the LLDP neighbour information.
@@ -1267,7 +1181,7 @@ def lldpNeighborInfo(mode,fab_devices,csw_devices,asw_devices,devices=[],fab=[],
                         source_port=source_params[1]
                         dest_name=dest_params[0]
                         dest_port=dest_params[1]
-                        if source_port==portid and dest_port==neighborportid and dest_name == dest1: 
+                        if source_port==portid and dest_port==neighborportid and dest_name.lower() == dest1: 
                             log.info("port "+portid+" of "+device_name+" Is Connected To Port "+neighborportid+" of "+dest1)
                             count=count+1
                             break
@@ -1353,7 +1267,7 @@ def lldpNeighborInfo(mode,fab_devices,csw_devices,asw_devices,devices=[],fab=[],
                                 source_port=source_params[1]
                                 dest_name=dest_params[0]
                                 dest_port=dest_params[1] 
-                                if source_port==portid and dest_port==neighborportid and dest_n == dest1: 
+                                if source_port==portid and dest_port==neighborportid and dest_n == dest1.lower(): 
                                     log.info("port "+portid+" of "+device_name+" Is Connected To Port "+neighborportid+" of "+dest1)
                                     count=count+1
                                     flag = 1
@@ -1377,44 +1291,10 @@ def lldpNeighborInfo(mode,fab_devices,csw_devices,asw_devices,devices=[],fab=[],
           
                       
 
-
-'''
-[API Documentation]
-#ID : ops_api_0030
-#Name : showrun()
-#API Feature details :
-#1 " To verify features
-'''           
-
-def showrun(device,dec,*string):
-        count=0
-        device_name=Device_parser(device)
-        connectionInfo=Connect(device)
-        connectionInfo.sendline("snap_cli")
-        connectionInfo.expect(">")
-        connectionInfo.sendline("enable")  
-        connectionInfo.expect("#")
-        connectionInfo.sendline("show run")  
-        connectionInfo.expect("#")
-        result= connectionInfo.before         
-        log.details(result)
-        fd = open("sample.txt","w+")
-        fd.write(result)
-        fd.close()
-        f = open("sample.txt","r") 
-        line = f.readlines()
-        for i in range (len(string)):
-            if string[i] in line:
-                count= count+1
-        os.remove("sample.txt")
-        if count == len(string):
-            log.success(desc+" is configured and verified successfully")
-     
-
         
 '''
 [API Documentation]
-#ID : ops_api_0030
+#ID : ops_api_0028
 #Name : host()
 #API Feature details :
 #1 " To rename host
@@ -1437,12 +1317,12 @@ def host(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],hostname=
             list1.append(i)
         for i in asw:
             list1.append(i)
-        print list1
     for i in range(len(list1)):
             port = []
             device = list1[i]
             device_name=Device_parser(device)
             connectionInfo=Connect(device)
+            log.info("log into "+device_name+" to specify Hostname")
             connectionInfo.sendline(hostname[list1[i]])
             connectionInfo.expect("#")
             
