@@ -19,7 +19,6 @@ class FlexSwitchShow( object):
         valueList - List of tuples containing the data to be put into
                     the rows.  Each attribute must be in string format
         '''
-
         def terminal_size():
             import fcntl, termios, struct
             h, w, hp, wp = struct.unpack('HHHH',
@@ -36,6 +35,7 @@ class FlexSwitchShow( object):
             var1=indent([labels]+rows, hasHeader=True, separateRows=True,
                      prefix=' ', postfix=' ', headerChar= '-', delim='    ',
                  wrapfunc=lambda x: wrap_onspace_strict(x,width))
+
             return var1
         elif rows:
             width = (width / len(rows[0])) + 5
@@ -316,8 +316,8 @@ class FlexSwitchShow( object):
             values.append('%s' % o['Action'])
             values.append('%s' % o['MatchConditions'])
             rows.append(values)
-        self.tblPrintObject('PolicyStmt', header, rows)
-
+        var =self.tblPrintObject('PolicyStmt', header, rows)
+        return var
 
     def printQsfpChannels(self, addHeader=True, brief=None):
         header = []; rows = []
@@ -3517,8 +3517,8 @@ class FlexSwitchShow( object):
             values.append('%s' % o['MatchType'])
             values.append('%s' % o['PolicyType'])
             rows.append(values)
-        self.tblPrintObject('PolicyDefinition', header, rows)
-
+        var = self.tblPrintObject('PolicyDefinition', header, rows)
+        return var
 
     def printAclStates(self, addHeader=True, brief=None):
         header = []; rows = []
@@ -4739,8 +4739,8 @@ class FlexSwitchShow( object):
             values.append('%s' % o['HoldTime'])
             values.append('%s' % o['ConnectRetryTime'])
             rows.append(values)
-        self.tblPrintObject('BGPv4PeerGroup', header, rows)
-
+        var = self.tblPrintObject('BGPv4PeerGroup', header, rows)
+        return var
 
     def printIPv4RouteStates(self, addHeader=True, brief=None):
         header = []; rows = []
@@ -4797,8 +4797,8 @@ class FlexSwitchShow( object):
             values.append('%s' % o['PolicyList'])
             values.append('%s' % o['NextBestRoute'])
             rows.append(values)
-            self.tblPrintObject('IPv4RouteState', header, rows)
-
+            var = self.tblPrintObject('IPv4RouteState', header, rows)
+            return var
         else:
             print rawobj.content
 
@@ -5840,8 +5840,8 @@ class FlexSwitchShow( object):
             values.append('%s' % o['L2IntfType'])
             values.append('%s' % o['L2IntfId'])
             rows.append(values)
-        self.tblPrintObject('IPv6IntfState', header, rows)
-
+        var = self.tblPrintObject('IPv6IntfState', header, rows)
+        return var
 
     def printIPv6IntfState(self, IntfRef, addHeader=True, brief=None):
         header = []; rows = []
@@ -7759,7 +7759,8 @@ class FlexSwitchShow( object):
             values.append('%s' % o['ConditionInfo'])
             values.append('%s' % o['PolicyStmtList'])
             rows.append(values)
-        self.tblPrintObject('PolicyConditionState', header, rows)
+        var = self.tblPrintObject('PolicyConditionState', header, rows)
+        return var
 
 
     def printPolicyConditionState(self, Name, addHeader=True, brief=None):
@@ -8195,10 +8196,10 @@ class FlexSwitchShow( object):
             header.append('VlanName')
             header.append('OperState')
             header.append('IfIndex')
-            header.append('SysInternalDescription')
+            #header.append('SysInternalDescription')
             header.append('IntfList')
             header.append('UntagIntfList')
-            header.append('AdminState')
+            #header.append('AdminState')
 
         objs = self.swtch.getAllVlanStates()
         for obj in objs:
@@ -8208,16 +8209,16 @@ class FlexSwitchShow( object):
             values.append('%s' % o['VlanName'])
             values.append('%s' % o['OperState'])
             values.append('%s' % o['IfIndex'])
-            values.append('%s' % o['SysInternalDescription'])
+            #values.append('%s' % o['SysInternalDescription'])
             r = self.swtch.getVlan(o['VlanId'])
             if r.status_code in self.httpSuccessCodes:
                 o = r.json()['Object']
                 values.append('%s' % o['IntfList'])
                 values.append('%s' % o['UntagIntfList'])
-                values.append('%s' % o['AdminState'])
+                #values.append('%s' % o['AdminState'])
             rows.append(values)
-        self.tblPrintObject('VlanState', header, rows)
-
+        var = self.tblPrintObject('VlanState', header, rows)
+        return var
 
     def printIsisGlobalStates(self, addHeader=True, brief=None):
         header = []; rows = []
@@ -9064,8 +9065,8 @@ class FlexSwitchShow( object):
             values.append('%s' % o['L2IntfType'])
             values.append('%s' % o['L2IntfId'])
             rows.append(values)
-        self.tblPrintObject('IPv4IntfState', header, rows)
-
+        var = self.tblPrintObject('IPv4IntfState', header, rows)
+        return var
 
     def printIPv4IntfState(self, IntfRef, addHeader=True, brief=None):
         header = []; rows = []
@@ -10208,8 +10209,8 @@ class FlexSwitchShow( object):
             values.append('%s' % o['V4Routes'])
             values.append('%s' % o['V6Routes'])
             rows.append(values)
-        self.tblPrintObject('RouteStatsPerProtocolState', header, rows)
-
+        var = self.tblPrintObject('RouteStatsPerProtocolState', header, rows)
+        return var
 
     def printRouteStatsPerProtocolState(self, Protocol, addHeader=True, brief=None):
         header = []; rows = []

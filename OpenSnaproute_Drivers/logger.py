@@ -59,8 +59,8 @@ def details(msg,step='', html=True, also_console=False, timestamp=None):
     if also_console and step=='':
         sys.__stdout__.write("\n\x1b[1;30mDETAILS       : %s\x1b[0m" %(msg))
     elif also_console and step!='':
-        sys.__stdout__.write("\n\x1b[1;30mSTEP-DETAILS %s: %s\x1b[0m" %(step,msg))'''
-
+        sys.__stdout__.write("\n\x1b[1;30mSTEP-DETAILS %s: %s\x1b[0m" %(step,msg))
+'''
 def details(msg, html=True, also_console=True,timestamp=None):
     currentThread = threading.currentThread()
     if currentThread.getName() in LOGGING_THREADS:
