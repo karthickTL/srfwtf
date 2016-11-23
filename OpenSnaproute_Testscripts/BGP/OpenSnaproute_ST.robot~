@@ -1,0 +1,242 @@
+*** Settings ***
+Documentation    Test Suite ID 		: 	LINKED_IN_FT_01
+...
+...              Test Suite Name 	: 	OpenSwitch_ST_02
+...
+...              Created 		:	23-Sept-2016
+...
+...              Status 		: 	Completed 
+...
+...              @authors		: 	TERRALOGIC TEAM
+...
+...              Abstract 		:       This test suite examines the basic functionalities of OpenSwitch using "Dockers Setup"
+...
+...              Test-cases List 	:	1.Verify IPv4 BGP on all devices	
+...              			: 	2.Manually clear BGP routing process. Measure convergence time and verify system status.
+...              			: 	3.Trigger link failure and link recovery. Measure convergence time and verify system status.
+...              			: 	4.Verify that all ACLs with required number of rules are assigned to port-based and SVI interfaces.
+...              			: 	5.Verify lldp feature.
+
+
+
+Library  OperatingSystem
+Library  Collections
+
+Library	  /home/${USER}/BGP/OpenSnaproute/OpenSnaproute_Drivers/OpenSnaprouteCliDriver.py  
+Variables   /home/${USER}/BGP/OpenSnaproute/OpenSnaproute_Variables/BGP_Variables.py
+Suite Setup   Loading Basic Configuration
+Suite Teardown   Deleting Basic Configuration
+
+
+Library   FlexSwitch.py  ${ip_1}  ${port}  WITH NAME  swtch1  
+*** Variables ***
+${USER}  openswitch
+${ip_1}  172.17.0.2
+${port}  8080
+
+
+*** TestCases ***
+
+Testcase1
+    [Documentation]  Verify IPv4 BGP on all devices
+    Sleep  120s
+    CHECKPOINT  1.1 Check for the ipv4 bgp-neighbourship on all the devices
+    TC1:check_bgp_neighbourship
+
+Testcase2
+    [Documentation]  Trigger link failure and link recovery. 
+    Policy
+    Sleep  30s
+    CHECKPOINT  2.5 Checking trigger link failure
+    ${out}=  trigger  ${device}  ${destination_network}  ${interface_ip_dict}  ${interface_dict}
+    Should Be True  ${out}
+*** keywords ***
+ 
+Load-Base-configuration
+    CHECKPOINT   assigning IP and verifying  
+    ${out} =  assignip  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${subnet}  ${fab}  ${csw}  ${asw}  ${interface_dict}  ${interface_ip_dict}
+    Should Be True  ${out}
+
+    CHECKPOINT   assigning BGP and verifying  
+    ${out} =  assignbgp_rrclient  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}  ${interface_ip_dict}  ${asnum}  ${routerid}
+    Should Be True  ${out}
+    
+
+Enabling the Interface
+    ${out}=  flap_state  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}  ${interface_dict}
+    Should Be True  ${out}
+Remove-Base-configuration
+    CHECKPOINT   Removing IP and verifying  
+    ${out}=  removeip  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${subnet}  ${fab}  ${csw}  ${asw}  ${interface_dict}  ${interface_ip_dict}
+    Should Be True  ${out}
+    CHECKPOINT   removing BGP and verifying  
+    ${out}=  removebgp  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}  ${interface_ip_dict}  ${asnum}  ${routerid} 
+    Should Be True  ${out}
+
+TC1:check_bgp_neighbourship
+    ${out}=  neighbor_state_all  Estab  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}  ${interface_ip_dict}
+    Should Be True  ${out}
+Policy 
+    CHECKPOINT  Creating a policy Condition
+    ${out} =  createPolicyCondition_name  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}  ${Condition_name}  ${ConditionType}  ${Protocol}  ${IpPrefix}  ${MaskLengthRange}  ${PrefixSet}  
+    Should Be True  ${out}
+    CHECKPOINT  Creating a policy statement
+    ${out} =  createPolicyStatement  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}  ${stmt_name}  ${Condition_name}  ${Action}  ${MatchConditions} 
+    Should Be True  ${out} 
+    CHECKPOINT  Creating a policy definition
+    ${out} =  create_Policy_Definitions  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}  ${stmt_name}  ${Pol_def_name}  ${Priority}  ${MatchType}  ${PolicyType}
+    Should Be True  ${out}
+    CHECKPOINT  Adding the policy in BGP
+    ${out}=  createBGPGlobal  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}  ${asnum}  ${routerid}  redistribution=${Protocol}  pol_name=${Pol_def_name}  
+    Should Be True  ${out}    
+#*****************************Test Setup Keywords**************************************
+
+Loading Basic Configuration
+    CHECKPOINT   flaping the state and verifying
+    Enabling the Interface   
+    CHECKPOINT   load base configuration on devices and verifying
+    Load-Base-configuration
+
+
+
+#*****************************Test Teardown Keywords**************************************
+
+
+Deleting Basic Configuration
+
+    CHECKPOINT   Removing configuration on devices and verifying
+    Remove-Base-configuration
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
+[API Documentation]
+#ID : OpenSnaproute_api_052
+#Name :assignbgp_rrclient
+#API Feature details :
+"Device_parser" API will assign the BGP IPv4 address to the routers using SDK function and assign route reflector Client on the Leaf nodes
+''' 
+
+def assignbgp_rrclient(mode,fab_devices,csw_devices,asw_devices,fab=[],csw=[],asw=[],interface_ip_dict={},asnum={},router_id={}) :
+    list1=[]
+    neighbor=[]
+    peer_as=[]
+    c=0 
+    device_count1=0
+    device_count=0
+    non_leaf_count=0
+    if mode == "no" :
+        for i in range(0,int(fab_devices)) :
+            list1.append(fab[i])
+            device_count =device_count+1
+            non_leaf_count = non_leaf_count+1
+        for i in range(0,int(csw_devices)) :
+            list1.append(csw[i])
+            device_count =device_count+1
+            non_leaf_count = non_leaf_count+1
+        for i in range(0,int(asw_devices)) :
+            list1.append(asw[i])
+            device_count =device_count+1
+        for i in range(len(list1)):
+            need_count=0
+            received_count=0
+            neighbor=[]
+            peer_as=[]
+            device = list1[i]
+            device_name=Device_parser(device)
+            device_Info = Get_deviceInfo(device_name)
+            log.info("log-in to "+device_name+" and loading BGP configuration")
+            ip_address = device_Info[1]
+            swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
+            local=asnum[device]
+            Routerid=router_id[device]
+            swtch.updateBGPGlobal("default",ASNum=local,RouterId=Routerid)
+            device_count1=device_count1+1
+            for j in range(len(list1)):
+                peer=asnum[list1[j]]
+                if device != list1[j] :
+                    device_ip=list1[j]+"_"+device+"_interface_ip " 
+                    if device_ip in interface_ip_dict.keys() :
+                      need_count=need_count+1
+                      if device_count1 <= non_leaf_count:
+                          result=swtch.createBGPv4Neighbor("",interface_ip_dict[device_ip],PeerAS=peer,LocalAS=local)
+                          if result.ok or result.status_code == 500:
+                            received_count=received_count+1
+                          else:
+                            log.failure ("Failed to Configure BGP neighbor "+interface_ip_dict[device_ip]+"on "+device_name)
+                      if device_count1 > non_leaf_count and device_count1 <=device_count:
+                          result=swtch.createBGPv4Neighbor("",interface_ip_dict[device_ip],PeerAS=peer,LocalAS=local,RouteReflectorClient="True")
+                          if result.ok or result.status_code == 500:
+                            received_count=received_count+1
+                          else:
+                            log.failure ("Failed to Configure BGP neighbor "+interface_ip_dict[device_ip]+"on "+device_name)
+            if need_count == received_count:
+                log.success("BGP is configured successfully on "+device_name)
+                c=c+1
+    if mode == "yes":
+        for i in fab:
+            list1.append(i)
+            device_count =device_count+1
+            non_leaf_count = non_leaf_count+1
+        for i in csw:
+            list1.append(i)
+            device_count =device_count+1
+            non_leaf_count = non_leaf_count+1
+        for i in asw:
+            list1.append(i)
+            device_count =device_count+1
+        for i in range(len(list1)):
+            need_count=0
+            received_count=0
+            device = list1[i]
+            device_name=Device_parser(device)
+            device_Info = Get_deviceInfo(device_name)
+            log.info("log-in to "+device_name+" and loading BGP configuration")
+            ip_address = device_Info[1]
+            swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
+            local=asnum[device]      
+            Routerid=router_id[device]
+            swtch.updateBGPGlobal("default",ASNum=local,RouterId=Routerid)
+            device_count1=device_count1+1
+            for j in range(len(list1)):
+                peer=asnum[list1[j]]
+                if device != list1[j] :
+                    device_ip=list1[j]+"_"+device+"_interface_ip " 
+                    if device_ip in interface_ip_dict.keys() :
+                      need_count=need_count+1
+                      if device_count1 <= non_leaf_count:
+                          #print device,list1[j]
+                          result=swtch.createBGPv4Neighbor("",interface_ip_dict[device_ip],PeerAS=peer,LocalAS=local)
+                          if result.ok or result.status_code == 500:
+                            received_count=received_count+1
+                          else:
+                            log.failure ("Failed to Configure BGP neighbor "+interface_ip_dict[device_ip]+"on "+device_name)
+                      if device_count1 > non_leaf_count and device_count1 <=device_count:
+                          result=swtch.createBGPv4Neighbor("",interface_ip_dict[device_ip],PeerAS=peer,LocalAS=local,RouteReflectorClient="True")
+                          if result.ok or result.status_code == 500:
+                            received_count=received_count+1
+                          else:
+                            log.failure ("Failed to Configure BGP neighbor "+interface_ip_dict[device_ip]+"on "+device_name)
+            if need_count == received_count:
+                log.success("BGP is configured successfully on "+device_name)
+                c=c+1
+    if c == len(list1):
+        log.success("BGP is configured successfully")
+        return True
+    else:
+        log.failure("BGP is not configured")
+        return False                            
+
