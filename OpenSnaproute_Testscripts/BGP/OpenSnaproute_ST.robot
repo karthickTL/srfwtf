@@ -1,22 +1,18 @@
 *** Settings ***
-Documentation    Test Suite ID 		: 	LINKED_IN_FT_01
+Documentation    Test Suite ID 		: 	LINKED_IN_BGP_01
 ...
-...              Test Suite Name 	: 	OpenSwitch_ST_02
+...              Test Suite Name 	: 	OpenSnaproute_BGP_02
 ...
-...              Created 		:	23-Sept-2016
+...              Created 		:	23-Nov-2016
 ...
 ...              Status 		: 	Completed 
 ...
 ...              @authors		: 	TERRALOGIC TEAM
 ...
-...              Abstract 		:       This test suite examines the basic functionalities of OpenSwitch using "Dockers Setup"
+...              Abstract 		:       This test suite examines the basic functionalities of OpenSnaproute using "Dockers Setup"
 ...
 ...              Test-cases List 	:	1.Verify IPv4 BGP on all devices	
-...              			: 	2.Manually clear BGP routing process. Measure convergence time and verify system status.
-...              			: 	3.Trigger link failure and link recovery. Measure convergence time and verify system status.
-...              			: 	4.Verify that all ACLs with required number of rules are assigned to port-based and SVI interfaces.
-...              			: 	5.Verify lldp feature.
-
+...              			: 	2.Trigger link failure and link recovery. Measure convergence time and verify system status.
 
 
 Library  OperatingSystem
@@ -28,12 +24,9 @@ Suite Setup   Loading Basic Configuration
 Suite Teardown   Deleting Basic Configuration
 
 
-Library   FlexSwitch.py  ${ip_1}  ${port}  WITH NAME  swtch1  
+
 *** Variables ***
 ${USER}  openswitch
-${ip_1}  172.17.0.2
-${port}  8080
-
 
 *** TestCases ***
 
