@@ -31,10 +31,6 @@ Suite Teardown   Delete IPv4 interfaces
 Library	  /home/${USER}/Downloads/Final_FT_ST/OpenSnaproute/OpenSnaproute_Drivers/OpenSnaprouteCliDriver.py  
 Variables   /home/${USER}/Downloads/Final_FT_ST/OpenSnaproute/OpenSnaproute_Variables/FT_Variable.py
 
-Library   FlexSwitch.py  ${ip_1}  ${port}  WITH NAME  swtch1  
-Library   FlexSwitch.py  ${ip_2}  ${port}  WITH NAME  swtch2 
-Library   FlexSwitch.py  ${ip_3}  ${port}  WITH NAME  swtch3 
-Library   FlexSwitch.py  ${ip_4}  ${port}  WITH NAME  swtch4 
 
 #---------------------------------------5-NODES-OpenSwitch TOPOLOGY----------------------
 #
@@ -59,13 +55,6 @@ Library   FlexSwitch.py  ${ip_4}  ${port}  WITH NAME  swtch4
 
 *** Variables ***
 ${USER}  openswitch4
-${ip_1}  172.17.0.2
-${ip_2}  172.17.0.3
-${ip_3}  172.17.0.4
-${ip_4}  172.17.0.5
-${port}  8080
-
-
 *** Testcases ***
 
 

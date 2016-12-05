@@ -2139,7 +2139,7 @@ def vlan_config(device,vlan_id):
     ip_address = device_Info[1]
     swtch = FlexSwitch (ip_address, 8080)  # Instantiate object to talk to flexSwitch
     create_Vlan=swtch.createVlan(vlan_id,None,None)
-    if create_Vlan.ok or result.status_code == 500:
+    if create_Vlan.ok or create_Vlan.status_code == 500:
         log.success("Vlan is created on "+device_name)
         return True
 

@@ -55,13 +55,6 @@ Variables   /home/${USER}/Downloads/Final_FT_ST/OpenSnaproute/OpenSnaproute_Vari
 
 *** Variables ***
 ${USER}  openswitch4
-${ip_1}  172.17.0.2
-${ip_2}  172.17.0.3
-${ip_3}  172.17.0.4
-${ip_4}  172.17.0.5
-${port}  8080
-
-
 *** Testcases ***
 
 
