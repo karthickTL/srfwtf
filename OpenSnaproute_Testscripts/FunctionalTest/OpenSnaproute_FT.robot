@@ -10,8 +10,6 @@ Documentation    Test Suite ID 		: 	LINKED_IN_FT_01
 ...
 ...              @authors		: 	TERRALOGIC TEAM
 ...
-...                                     :       Mahesh                            mahesh.janya@terralogic.com
-...                                     :       Karthick Ramalingum               karthick@terralogic.com
 ...
 ...              Abstract 		:       This test suite examines the basic functionalities of OpenSnaproute using "Dockers Setup"
 ...
@@ -22,6 +20,7 @@ Documentation    Test Suite ID 		: 	LINKED_IN_FT_01
 ...                                     :       5.Verify the "BFD-Timers" functionality.
 ...                                     :       6.Verify vlan basic testing.
 ...              			: 	7.Verify the IPV6 E-BGP neighbourship.
+...                                     :       8.Verifiy "reconnect-interval interval" and test Neighborship tries re-establish after the interval time
 
 Library   Collections
 Library   SSHLibrary
@@ -247,6 +246,29 @@ Testcase7
     CHECKPOINT  7.5 Remove bgp configuration on devices and verifying
     TC7:Remove-Base-configuration_bgpv6
 
+Testcase8
+    [Documentation]  Verifiy "reconnect-interval interval" and test Neighborship tries re-establish after the interval time
+    
+    CHECKPOINT  8.1 load BGP configuration on devices and verifying
+    TC8:Load-Base-configuration_bgp
+    Sleep  60s
+
+    CHECKPOINT  8.2 Check the bgp-neighbourship for Established state
+    TC8:check_bgp_neighbourship
+
+    CHECKPOINT  8.3 Update the bgp neighbor with connect retry time as ${retry_time} 
+    TC8:Update a BGP neighbor on a neighbor of a device
+
+    CHECKPOINT  8.4 Flaping interface on the particular port
+    TC8: Flaping interface on the particular port 
+
+    delay  ${retry_time}  waiting for bgp neighborship until connect retry time
+
+    CHECKPOINT  8.5 Check the bgp-neighbourship for Established state
+    TC8:check_bgp_neighbourship_on_a_device
+
+    CHECKPOINT  8.6 Remove bgp configuration on devices and verifying  
+    TC8:Remove-Base-configuration_bgp
 
 *** keywords ***
 
@@ -484,6 +506,29 @@ TC6:Deleting_vlan_from_interface
     ${out}=  interface_vlan  ${device_list[1]}  ${vlan_id}
     Should Be True  ${out}
 
+TC8:Load-Base-configuration_bgp
+    ${out}=  assignbgp  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}  ${interface_ip_dict}  ${asnum}  ${routerid}
+    Should Be True  ${out}
+TC8:check_bgp_neighbourship
+    ${out}=  neighbor_state_all  Estab  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}  ${interface_ip_dict}
+    Should Be True  ${out}
+TC8:Update a BGP neighbor on a neighbor of a device
+    ${out}=  update_bgpneighbor  ${device_list[0]}  ${device1_neighbour1_IP}  retrytime=${retry_time}
+    Should Be True  ${out}
+TC8: Flaping interface on the particular port 
+    ${out}=  state  ${device_list[1]}  ${device2_interface_1}  DOWN
+    Should Be True  ${out}
+    Sleep  2s
+    ${out}=  state  ${device_list[1]}  ${device2_interface_1}  UP
+    Should Be True  ${out}
+
+TC8:check_bgp_neighbourship_on_a_device
+    ${out}=  particular_device_neighbor_check  Estab  ${device_list[0]}  ${device_list[1]}  ${interface_ip_dict}  
+    Should Be True  ${out}
+
+TC8:Remove-Base-configuration_bgp
+    ${out}=  removebgp  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}  ${interface_ip_dict}  ${asnum}  ${routerid}
+    Should Be True  ${out}
 #*****************************Test Setup Keywords**************************************
 
 IP_BGP configuration and Flap_verify the interfaces

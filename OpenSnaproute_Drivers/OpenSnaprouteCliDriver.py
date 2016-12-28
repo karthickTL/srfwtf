@@ -2261,20 +2261,21 @@ def create_peergroup(device,name,peeras):
 #API Feature details :
 "Device_parser" API will Update the BGP using SDK function
 ''' 
-def update_bgpneighbor(device,neighboraddress,local=None,password=None,Keep_alive_time=None,Hold_time=None):
+def update_bgpneighbor(device,neighboraddress,local=None,password=None,Keep_alive_time=None,Hold_time=None,retrytime=None):
     device_name=Device_parser(device)
     device_Info = Get_deviceInfo(device_name)
     ip_address = device_Info[1]
     swtch = FlexSwitch (ip_address, 8080)
-
-    result=swtch.updateBGPv4Neighbor('',neighboraddress,LocalAS=local,AuthPassword=password,KeepaliveTime=Keep_alive_time,HoldTime=Hold_time)
-    if result.ok:
+    log.info("log into "+device_name+"on the neighbor ip "+neighboraddress+" to update")
+    result=swtch.updateBGPv4Neighbor('',neighboraddress,LocalAS=local,AuthPassword=password,KeepaliveTime=Keep_alive_time,HoldTime=Hold_time,ConnectRetryTime=retrytime)
+    if result.ok or result.status_code == 500:
         log.success("BGP neighbor is updated on "+device_name)
         return True
 
     else:
         log.failure("Failed to update BGP neighbor on "+device_name)
         return False    
+
 
 
 '''

@@ -269,3 +269,6 @@ minrx=150
 interval=150 
 multiplier=3
 
+#connect_retry
+
+retry_time=2
