@@ -1,6 +1,9 @@
+"""
+testfail is the basic driver which will handle all the Exceptions raised.
+"""
 import traceback
 import sys
-'''
+"""
 def getTraceback(tbObj):
     tb = 'Traceback (most recent call last):\n'
     tbList = traceback.extract_tb(tbObj)
@@ -8,51 +11,51 @@ def getTraceback(tbObj):
         tb += 'File %s, line %s, in %s\n %s\n' %(file, line, func, caller)
     sys.__stdout__.write(tb)
     return tb
-'''
+"""
 
-class wrongPassword(Exception):
+class WrongPassword(Exception):
     pass
 
-class patternNotReceived(Exception):
+class PatternNotReceived(Exception):
     pass
 
-class deviceNotFound(Exception):
+class DeviceNotFound(Exception):
     pass
 
-class linkNotFound(Exception):
+class LinkNotFound(Exception):
     pass
 
-class configFailed(Exception):
+class ConfigFailed(Exception):
     pass
 
-class reloadFailed(Exception):
+class ReloadFailed(Exception):
     pass
 
-class threadFailed(Exception):
+class ThreadFailed(Exception):
     pass
 
-class deviceNotInDb(Exception):
+class DeviceNotInDb(Exception):
     pass
 
-class noDeviceObjAvailable(Exception):
+class NoDeviceObjAvailable(Exception):
     pass
 
-class noSuchClass(Exception):
+class NoSuchClass(Exception):
     pass
 
-class devObjExists(Exception):
+class DevObjExists(Exception):
     pass
 
 class FailOverFailed(Exception):
     pass
 
-class trafficGenError(Exception):
+class TrafficGenError(Exception):
     pass
 
-class testFailed(Exception):
+class TestFailed(Exception):
     pass
 
-class topologyUnavailable(Exception):
+class TopologyUnavailable(Exception):
     pass
 
 class UnableToLoadTheImage(Exception):
@@ -61,11 +64,11 @@ class UnableToLoadTheImage(Exception):
 class AttributeNotFound(Exception):
     pass
 
-class PromptNotFound(Exception) :
+class PromptNotFound(Exception):
     pass
 
-class noCleanProcedure(Exception) :
+class NoCleanProcedure(Exception):
     pass
 
-class powerCycleFailed(Exception) :
+class PowerCycleFailed(Exception):
     pass
