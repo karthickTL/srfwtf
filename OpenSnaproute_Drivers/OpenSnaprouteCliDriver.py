@@ -13,6 +13,8 @@ import sys
 import os
 import re
 import ast
+import pxssh
+import getpass
 import time
 import string
 import xmldict
@@ -60,7 +62,7 @@ def get_device_info(device):
         pattern = device
         match = re.search(pattern, value)
         if match:
-            device_list = value.split(', ')
+            device_list = value.split(',')
             return device_list
 
 
@@ -92,6 +94,7 @@ def assign_ip(mode, fab_devices, csw_devices, asw_devices, subnet, fab=None, csw
             device_name = device_parser(device)
             log.info("login to %s and configure IP address" % device_name)
             device_info = get_device_info(device_name)
+
             ip_address = device_info[1]
             switch = FlexSwitch(ip_address, 8080)   # Instantiate object to talk to flexSwitch
             for j in range(len(list1)):
@@ -149,7 +152,7 @@ def remove_ip(mode, fab_devices, csw_devices, asw_devices, subnet, fab=None, csw
             switch = FlexSwitch(ip_address, 8080)  # Instantiate object to talk to flexSwitch
             for j in range(len(list1)):
                 if device != list1[j]:
-                    device_ip = "%s_%s__interface_ip" % (device, list1[j])
+                    device_ip = "%s_%s_interface_ip" % (device, list1[j])
                     device_interface = "%s_%s_eth" % (device, list1[j])
                     if device_ip in interface_ip_dict.keys() and device_interface in interface_dict.keys():
                         need_count += 1
@@ -205,7 +208,7 @@ def assign_bgp(mode, fab_devices, csw_devices, asw_devices, fab=None, csw=None, 
             for j in range(len(list1)):
                 peer = asnum[list1[j]]
                 if device != list1[j]:
-                    device_ip = "%s_%s__interface_ip" % (list1[j], device)
+                    device_ip = "%s_%s_interface_ip" % (list1[j], device)
                     if device_ip in interface_ip_dict.keys():
                         need_count += 1
                         result = switch.create_bgpv4_neighbor("", interface_ip_dict[device_ip], peer_as=peer, local_as=local)
@@ -616,20 +619,19 @@ def trigger(device, ip, interface_ip_dict=None, interface_dict=None):
         log.details(result)
         pattern = r"[\{u'A-z:, \s*0-9./+\}-]*NextHopIntRef':\s*u'(\w+)[', \s*u'A-z:0-9]*Ip':\s*u'(\d+.\d+.\d+.\d+).*"
         match = re.match(pattern, str(result))
-        if result:
-            if match:
-                add = match.group(1)
-                log.info("BestPath port: %s" % add)
-                eth = match.group(1)
-                state(device, eth, state_value="DOWN")
-                time.sleep(5)
-                port.append(eth)
-                count = count+1
-            else:
-                flag = 0
-                log.info("No bestpath found")
-                log.info("bringing up all the shut down interfaces")
-                for i in range(0, len(port)):
+        if match:
+            add = match.group(1)
+            log.info("BestPath port: %s" % add)
+            eth = match.group(1)
+            state(device, eth, state_value="DOWN")
+            time.sleep(5)
+            port.append(eth)
+            count = count+1
+        else:
+            flag = 0
+            log.info("No bestpath found")
+            log.info("bringing up all the shut down interfaces")
+            for i in range(0, len(port)):
                     state(device, port[i], state_value='UP')
 
     if count > 1:
@@ -741,7 +743,7 @@ def state(device, port, state_value=''):
     switch = FlexSwitch(ip_address, 8080)
     if state_value == "DOWN":
         log.info("shutdown the interface %s on %s" %(port, device_name))
-        result = switch.updatePort(port, AdminState='DOWN')
+        result = switch.update_port(port, admin_state='DOWN')
         if result.ok or result.status_code == 500:
             log.success("port %s is down" % port)
             return True
@@ -750,7 +752,7 @@ def state(device, port, state_value=''):
             return False
     if state_value == "UP":
         log.info("Making the interface %s  UP on %s " % (port, device_name))
-        result = switch.updatePort(port, AdminState='UP')
+        result = switch.update_port(port, admin_state='UP')
         if result.ok or result.status_code == 500:
             log.success("port %s is up" % port)
             return True
@@ -763,6 +765,47 @@ def connect(device):
     """
     Establishes connection to the device
     """
+    try:
+        device_name = device_parser(device)
+        device_info = get_device_info(device_name)
+        ip_address = device_info[1]
+        port = device_info[2]
+        user = device_info[3]
+        password = device_info[4]
+        s.login (ip_address, user, password)
+        return s
+    except pxssh.ExceptionPxssh, e:
+        log.info( "pxssh failed on login.")
+
+"""
+def connect(device):
+
+    device_name = device_parser(device)
+    device_info = get_device_info(device_name)
+    ip_address = device_info[1]
+    port = device_info[2]
+    user = device_info[3]
+    password = device_info[4]
+    log.info(ip_address)
+    refused = "ssh: connect to host %s port 22: Connection refused" % ip_address
+    child=pexpect.spawn("ssh %s@%s" % (user, ip_address))
+    child.expect('password:')     # put in the prompt you expect after sending SSH
+    child.sendline('root')
+    child.expect('#')
+    child.sendline(' ')
+    child.expect('#')
+    child.sendline('\n ping 10.0.5.1 -c 5 ')
+    child.expect('#')
+    log.info(child.before)
+    log.info("11111111111111111111111111111111111")                     
+    return child
+
+
+
+def connect(device):
+
+    Establishes connection to the device
+
     device_name = device_parser(device)
     device_info = get_device_info(device_name)
     ip_address = device_info[1]
@@ -774,11 +817,13 @@ def connect(device):
     expect = 7
     while expect == 7:
         expect = connection_info.expect(["Are you sure you want to continue connecting", "password:", pexpect.EOF, pexpect.TIMEOUT, refused, '>|#|$', "Host key verification failed."], 120)
+        expect = 1
         if expect == 0:   # Accept key, then expect either a password prompt or access
             connection_info.sendline('yes')
             expect = 7   # Run the loop again
             continue
         if expect == 1:   # Password required
+            log.info("###########################################################")
             connection_info.sendline(password)
             connection_info.expect('>|#|$')
             if not connection_info.expect:
@@ -797,16 +842,18 @@ def connect(device):
             pass
         elif expect == 6:
             # cmd='ssh-keygen -R ['+ip_address+']:'+port
-            cmd = 'ssh-keygen -f "/home/openswitch/.ssh/known_hosts" -R ' + ip_address
+            cmd = 'ssh-keygen -f "/home/naveen/.ssh/known_hosts" -R ' + ip_address
             os.system(cmd)
             connection_info = pexpect.spawn("ssh -p %s %s@%s" % (port, user, ip_address), env={"TERM": "xterm-mono"}, maxread=50000)
             expect = 7
             continue
-        connection_info.sendline("")
         connection_info.expect('>|#|$')
+        connection_info.sendline("ping 10.0.5.1 -c 5")
+        connection_info.expect('>|#|$')
+        log.info(connection_info.before)
     return connection_info
 
-
+"""
 def case(string_value, device_id=''):
     """
     Print the CASE info
@@ -1132,7 +1179,7 @@ def lldp_neighbor_info_v2(mode, path, sheet_name, fab_devices, csw_devices, asw_
             count = 0
             line = f.readlines()
             for eachline in line:
-                pattern1 = r'\s*([A-z0-9]*)\s*\d*\s*\d*\s*\d*\s*True\s*([A-z0-9]*)\s+[A-z0-9:]*\s*([A-z0-9]*)\s*([A-z0-9]*)\s*[0-9A-z.]*\s*F.*'
+                pattern1 = r'\s*([A-z0-9]*)\s*\d*\s*\d*\s*\d*\s*True\s*([A-z0-9]*)\s*[A-z0-9:]*\s*([A-z0-9]*)\s*([A-z0-9.]*)\s+[A-z0-9.]*\s+Flex'         
                 match = re.match(pattern1, eachline)
                 if match:
                     device_name = device_name.lower()
@@ -1190,7 +1237,7 @@ def lldp_neighbor_info_v2(mode, path, sheet_name, fab_devices, csw_devices, asw_
             line = f.readlines()
             device_name = device_name.lower()
             for eachline in line:
-                pattern1 = r'\s*([A-z0-9]*)\s*\d*\s*\d*\s*\d*\s*True\s*([A-z0-9]*)\s+[A-z0-9:]*\s*([A-z0-9]*)\s*([A-z0-9]*)\s*[0-9A-z.]*\s*F.*'
+                pattern1 = r'\s*([A-z0-9]*)\s*\d*\s*\d*\s*\d*\s*True\s*([A-z0-9]*)\s*[A-z0-9:]*\s*([A-z0-9]*)\s*([A-z0-9.]*)\s+[A-z0-9.]*\s+Flex'
                 match = re.match(pattern1, eachline)
                 if match:
                     neighbor_portid = match.group(3)
@@ -1212,15 +1259,15 @@ def lldp_neighbor_info_v2(mode, path, sheet_name, fab_devices, csw_devices, asw_
                     if flag == 1:
                         flag = 0
                         break
-                if count == rise and count != 0:
-                    log.success("LLDP Neighbor Information Matched With The Given Information\n")
-                    result_list.append("Pass")
-                else:
-                    log.failure("LLDP Neighbor Information Does Not Matches With The Given Information\n")
-                    result_list.append("Fail")
-                count = 0
-                rise = 0
-                list2 = []
+            if count == rise and count != 0:
+                log.success("LLDP Neighbor Information Matched With The Given Information\n")
+                result_list.append("Pass")
+            else:
+                log.failure("LLDP Neighbor Information Does Not Matches With The Given Information\n")
+                result_list.append("Fail")
+            count = 0
+            rise = 0
+            list2 = []
         if "Fail" in result_list:
             raise testfail.TestFailed("LLDP neighbor information does not matches with the given information\n")
 
@@ -1254,19 +1301,22 @@ def ping(device_src, device_dest, dest_ip):
     log.info("Device %s Log-in successful" % device_parser(device_src))
     log.info("start pinging from SOURCE-%s to DESTINATION-%s of IP- %s" % (device_parser(device_src), device_parser(device_dest), dest_ip))
     device_connect.sendline("ping %s -c 5" % dest_ip)
-    device_connect.expect("[#$]")
+    device_connect.prompt()
     time.sleep(20)
-    log.details(device_connect.before)
+    log.info(device_connect.before)
     ping_results = device_connect.before
-    pat = re.compile(r'(\n*\s*(\d+)\s*\s+packets\stransmitted\, \s+(\d+)\s+received\, \s*(\d+)\%\s+packet\s+loss)', re.MULTILINE)
+    pat = r'\s*\d+\s+\w+\s+\w+,\s+\d+\s+\w+,\s+(\d+)%\s+packet loss'
     match = re.search(pat, ping_results)
     if match:
-        packet_loss = match.group(4)
+        packet_loss = match.group(1)
+        log.info(packet_loss)
         if packet_loss == '0':
             log.success("PING Successful!!No Packet Loss")
             return True
         else:
+            log.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             raise AssertionError("PING UNSUCCESSFUL")
+
     else:
         raise AssertionError("PING UNSUCCESSFUL")
 
@@ -1324,7 +1374,7 @@ def assign_ipv6(mode, fab_devices, csw_devices, asw_devices, subnet, fab=None, c
                             log.failure("Failed to Configure IPv6 %s on %s" %(interface_dict[device_interface], device_name))
             if count1 == count2:
                 log.success("IPv6 is configured successfully on %s" % device_name)
-                count1 += 1
+                count += 1
     if mode == "yes":
         for i in fab:
             list1.append(i)
@@ -1668,11 +1718,11 @@ def check_bfd(mode, device, device1, interface_dict=None):
     log.info("Log-in into %s to check for neighbor" % device_name)
     connection_info = connect(device)
     connection_info.sendline("snap_cli ")
-    connection_info.expect(">")
+    connection_info.prompt()
     connection_info.sendline("enable ")
-    connection_info.expect("#")
+    connection_info.prompt()
     connection_info.sendline("show bfd session")
-    connection_info.expect("#")
+    connection_info.prompt()
     result = connection_info.before
     log.details(result)
     fd = open("sample.txt", "w+")
@@ -1717,7 +1767,7 @@ def interface_vlan(device, vlanid, intf=''):
     device_info = get_device_info(device_name)
     ip_address = device_info[1]
     switch = FlexSwitch(ip_address, 8080)
-    result = switch.update_vlan(vlanid, admin_state="None", intf_list=[intf])
+    result = switch.update_vlan(vlanid, admin_state="UP", intf_list=[intf])
     if result.ok or result.status_code == 500:
         if intf == '':
             log.success("Vlan interface is deleted on %s" % device_name)
@@ -1825,7 +1875,7 @@ def create_peergroup(device, name, peeras):
     ip_address = device_info[1]
     switch = FlexSwitch(ip_address, 8080)
     result = switch.create_bgpv4_peer_group(name, peer_as=str(peeras))
-    if result.ok:
+    if result.ok or result.status_code == 500:
         log.success("peer group is configured on %s" % device_name)
         return True
     else:
@@ -1842,7 +1892,7 @@ def update_bgp_neighbor(device, neighbor_address, local=None, password=None, kee
     ip_address = device_info[1]
     switch = FlexSwitch(ip_address, 8080)
     log.info("log into %s on the neighbor ip %s to update" % (device_name, neighbor_address))
-    result = switch.updateBGPv4Neighbor('', neighbor_address, LocalAS=local, AuthPassword=password, KeepaliveTime=keep_alive_time, HoldTime=hold_time, ConnectRetryTime=retrytime)
+    result = switch.update_bgpv4_neighbor('', neighbor_address, local_as=local, auth_password=password, keep_alive_time=keep_alive_time, hold_time=hold_time, connect_retry_time=retrytime)
     if result.ok or result.status_code == 500:
         log.success("BGP neighbor is updated on %s" % device_name)
         return True

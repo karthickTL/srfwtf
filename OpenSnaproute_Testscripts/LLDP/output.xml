@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generated="20170429 15:21:24.480" generator="Robot 3.0.2 (Python 2.7.6 on linux2)">
+<suite source="/home/naveen/Downloads/srfwtf-master/OpenSnaproute_Testscripts/LLDP/OpenSnaproute_lldp.robot" id="s1" name="OpenSnaproute lldp">
+<test id="s1-t1" name="Testcase1">
+<kw name="Checkpoint" library="OpenSnaprouteCliDriver">
+<doc>Print the Checkpoint</doc>
+<arguments>
+<arg>1.1 Specifying Hostname</arg>
+</arguments>
+<msg timestamp="20170429 15:21:24.560" html="yes" level="INFO">&lt;font color="blue"&gt;&lt;strong&gt; CHECKPOINT: &lt;/strong&gt; *** 1.1 Specifying Hostname &lt;/font&gt;</msg>
+<status status="PASS" endtime="20170429 15:21:24.560" starttime="20170429 15:21:24.560"></status>
+</kw>
+<kw name="Host" library="OpenSnaprouteCliDriver">
+<doc>Renames the host name</doc>
+<arguments>
+<arg>${device_all}</arg>
+<arg>${fab_count}</arg>
+<arg>${csw_count}</arg>
+<arg>${asw_count}</arg>
+<arg>${fab}</arg>
+<arg>${csw}</arg>
+<arg>${asw}</arg>
+<arg>${hostname}</arg>
+</arguments>
+<msg timestamp="20170429 15:21:28.917" html="yes" level="INFO">log into FAB05 to specify Hostname</msg>
+<msg timestamp="20170429 15:21:30.805" html="yes" level="INFO">log into FAB06 to specify Hostname</msg>
+<msg timestamp="20170429 15:21:32.944" html="yes" level="INFO">log into FAB07 to specify Hostname</msg>
+<msg timestamp="20170429 15:21:35.078" html="yes" level="INFO">log into FAB08 to specify Hostname</msg>
+<msg timestamp="20170429 15:21:37.211" html="yes" level="INFO">log into CSW01 to specify Hostname</msg>
+<msg timestamp="20170429 15:21:39.087" html="yes" level="INFO">log into CSW03 to specify Hostname</msg>
+<msg timestamp="20170429 15:21:40.947" html="yes" level="INFO">log into CSW02 to specify Hostname</msg>
+<msg timestamp="20170429 15:21:42.821" html="yes" level="INFO">log into CSW04 to specify Hostname</msg>
+<msg timestamp="20170429 15:21:44.729" html="yes" level="INFO">log into CSW05 to specify Hostname</msg>
+<msg timestamp="20170429 15:21:46.840" html="yes" level="INFO">log into CSW06 to specify Hostname</msg>
+<msg timestamp="20170429 15:21:48.864" html="yes" level="INFO">log into CSW07 to specify Hostname</msg>
+<msg timestamp="20170429 15:21:50.807" html="yes" level="INFO">log into CSW08 to specify Hostname</msg>
+<msg timestamp="20170429 15:21:52.864" html="yes" level="INFO">log into ASW01 to specify Hostname</msg>
+<msg timestamp="20170429 15:21:54.756" html="yes" level="INFO">log into ASW02 to specify Hostname</msg>
+<msg timestamp="20170429 15:21:56.774" html="yes" level="INFO">log into ASW03 to specify Hostname</msg>
+<msg timestamp="20170429 15:21:58.900" html="yes" level="INFO">log into ASW04 to specify Hostname</msg>
+<status status="PASS" endtime="20170429 15:21:59.535" starttime="20170429 15:21:24.560"></status>
+</kw>
+<kw name="Checkpoint" library="OpenSnaprouteCliDriver">
+<doc>Print the Checkpoint</doc>
+<arguments>
+<arg>1.2 Enable the LLDP and verifying</arg>
+</arguments>
+<msg timestamp="20170429 15:21:59.536" html="yes" level="INFO">&lt;font color="blue"&gt;&lt;strong&gt; CHECKPOINT: &lt;/strong&gt; *** 1.2 Enable the LLDP and verifying &lt;/font&gt;</msg>
+<status status="PASS" endtime="20170429 15:21:59.536" starttime="20170429 15:21:59.535"></status>
+</kw>
+<kw name="TC1:Enable the LLDP">
+<kw name="Enable Lldp" library="OpenSnaprouteCliDriver">
+<doc>"Enables the LLDP Globally</doc>
+<arguments>
+<arg>${device_all}</arg>
+<arg>${fab_count}</arg>
+<arg>${csw_count}</arg>
+<arg>${asw_count}</arg>
+<arg>${fab}</arg>
+<arg>${csw}</arg>
+<arg>${asw}</arg>
+</arguments>
+<assign>
+<var>${out}</var>
+</assign>
+<msg timestamp="20170429 15:21:59.539" html="yes" level="INFO">Log-in to FAB05 to enable LLDP</msg>
+<msg timestamp="20170429 15:21:59.553" level="INFO">Starting new HTTP connection (1): 172.17.0.2</msg>
+<msg timestamp="20170429 15:21:59.555" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: LLDP is enabled on FAB05 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 15:21:59.555" html="yes" level="INFO">Log-in to FAB06 to enable LLDP</msg>
+<msg timestamp="20170429 15:21:59.556" level="INFO">Starting new HTTP connection (1): 172.17.0.3</msg>
+<msg timestamp="20170429 15:21:59.606" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: LLDP is enabled on FAB06 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 15:21:59.607" html="yes" level="INFO">Log-in to FAB07 to enable LLDP</msg>
+<msg timestamp="20170429 15:21:59.609" level="INFO">Starting new HTTP connection (1): 172.17.0.4</msg>
+<msg timestamp="20170429 15:21:59.679" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: LLDP is enabled on FAB07 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 15:21:59.679" html="yes" level="INFO">Log-in to FAB08 to enable LLDP</msg>
+<msg timestamp="20170429 15:21:59.680" level="INFO">Starting new HTTP connection (1): 172.17.0.5</msg>
+<msg timestamp="20170429 15:21:59.801" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: LLDP is enabled on FAB08 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 15:21:59.802" html="yes" level="INFO">Log-in to CSW01 to enable LLDP</msg>
+<msg timestamp="20170429 15:21:59.803" level="INFO">Starting new HTTP connection (1): 172.17.0.6</msg>
+<msg timestamp="20170429 15:21:59.804" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: LLDP is enabled on CSW01 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 15:21:59.805" html="yes" level="INFO">Log-in to CSW03 to enable LLDP</msg>
+<msg timestamp="20170429 15:21:59.806" level="INFO">Starting new HTTP connection (1): 172.17.0.8</msg>
+<msg timestamp="20170429 15:21:59.807" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: LLDP is enabled on CSW03 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 15:21:59.807" html="yes" level="INFO">Log-in to CSW02 to enable LLDP</msg>
+<msg timestamp="20170429 15:21:59.808" level="INFO">Starting new HTTP connection (1): 172.17.0.7</msg>
+<msg timestamp="20170429 15:21:59.810" html="yes" level="INFO">Log-in to CSW04 to enable LLDP</msg>
+<msg timestamp="20170429 15:21:59.810" level="INFO">Starting new HTTP connection (1): 172.17.0.9</msg>
+<msg timestamp="20170429 15:21:59.811" html="yes" level="INFO">Log-in to CSW05 to enable LLDP</msg>
+<msg timestamp="20170429 15:21:59.812" level="INFO">Starting new HTTP connection (1): 172.17.0.10</msg>
+<msg timestamp="20170429 15:21:59.997" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: LLDP is enabled on CSW05 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 15:21:59.998" html="yes" level="INFO">Log-in to CSW06 to enable LLDP</msg>
+<msg timestamp="20170429 15:21:59.999" level="INFO">Starting new HTTP connection (1): 172.17.0.11</msg>
+<msg timestamp="20170429 15:22:00.102" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: LLDP is enabled on CSW06 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 15:22:00.103" html="yes" level="INFO">Log-in to CSW07 to enable LLDP</msg>
+<msg timestamp="20170429 15:22:00.104" level="INFO">Starting new HTTP connection (1): 172.17.0.12</msg>
+<msg timestamp="20170429 15:22:00.105" html="yes" level="INFO">Log-in to CSW08 to enable LLDP</msg>
+<msg timestamp="20170429 15:22:00.106" level="INFO">Starting new HTTP connection (1): 172.17.0.13</msg>
+<msg timestamp="20170429 15:22:00.180" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: LLDP is enabled on CSW08 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 15:22:00.181" html="yes" level="INFO">Log-in to ASW01 to enable LLDP</msg>
+<msg timestamp="20170429 15:22:00.182" level="INFO">Starting new HTTP connection (1): 172.17.0.14</msg>
+<msg timestamp="20170429 15:22:00.184" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: LLDP is enabled on ASW01 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 15:22:00.184" html="yes" level="INFO">Log-in to ASW02 to enable LLDP</msg>
+<msg timestamp="20170429 15:22:00.185" level="INFO">Starting new HTTP connection (1): 172.17.0.15</msg>
+<msg timestamp="20170429 15:22:00.282" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: LLDP is enabled on ASW02 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 15:22:00.283" html="yes" level="INFO">Log-in to ASW03 to enable LLDP</msg>
+<msg timestamp="20170429 15:22:00.284" level="INFO">Starting new HTTP connection (1): 172.17.0.16</msg>
+<msg timestamp="20170429 15:22:00.396" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: LLDP is enabled on ASW03 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 15:22:00.397" html="yes" level="INFO">Log-in to ASW04 to enable LLDP</msg>
+<msg timestamp="20170429 15:22:00.398" level="INFO">Starting new HTTP connection (1): 172.17.0.17</msg>
+<msg timestamp="20170429 15:22:00.435" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: LLDP is enabled on ASW04 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 15:22:00.436" html="yes" level="INFO">&lt;font color="red"&gt;&lt;b&gt; FAIL: LLDP is not enabled &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 15:22:00.436" level="INFO">${out} = False</msg>
+<status status="PASS" endtime="20170429 15:22:00.436" starttime="20170429 15:21:59.537"></status>
+</kw>
+<kw name="Should Be True" library="BuiltIn">
+<doc>Fails if the given condition is not true.</doc>
+<arguments>
+<arg>${out}</arg>
+</arguments>
+<msg timestamp="20170429 15:22:00.437" level="FAIL">'False' should be true.</msg>
+<status status="FAIL" endtime="20170429 15:22:00.437" starttime="20170429 15:22:00.436"></status>
+</kw>
+<status status="FAIL" endtime="20170429 15:22:00.437" starttime="20170429 15:21:59.536"></status>
+</kw>
+<doc>Verify lldp feature</doc>
+<status status="FAIL" endtime="20170429 15:22:00.437" critical="yes" starttime="20170429 15:21:24.559">'False' should be true.</status>
+</test>
+<doc>Test Suite ID : LINKED_IN_ST_01
+
+Test Suite Name : OpenSnapeRoute_ST_02
+
+Created : 03-nov-2016
+
+Status : Completed
+
+@authors : TERRALOGIC TEAM
+
+Abstract : This test suite examines the basic functionalities of OpenSnaproute using "Dockers Setup"
+
+Test-case : 1.Verify lldp feature.
+</doc>
+<status status="FAIL" endtime="20170429 15:22:00.438" starttime="20170429 15:21:24.481"></status>
+</suite>
+<statistics>
+<total>
+<stat fail="1" pass="0">Critical Tests</stat>
+<stat fail="1" pass="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat fail="1" id="s1" name="OpenSnaproute lldp" pass="0">OpenSnaproute lldp</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

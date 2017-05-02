@@ -18,13 +18,13 @@ Documentation    Test Suite ID 		: 	LINKED_IN_ST_01
 
 Library  OperatingSystem
 Library  Collections
-Library  /home/${USER}/Downloads/srfwtf/OpenSnaproute_Drivers/OpenSnaprouteCliDriver.py  
-Variables  /home/${USER}/Downloads/srfwtf/OpenSnaproute_Variables/Variables_LLDPV2.py
+Library  /home/${USER}/Downloads/srfwtf-master/OpenSnaproute_Drivers/OpenSnaprouteCliDriver.py  
+Variables  /home/${USER}/Downloads/srfwtf-master/OpenSnaproute_Variables/Variables_LLDPV2.py
 
 
 
 *** Variables ***
-${USER}  openswitch
+${USER}  naveen
 
 
 

@@ -1,0 +1,10 @@
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ IntfRef    IfIndex    SendFrames    ReceivedFrames    Enable    LocalPort    PeerMac              PeerPort    PeerHostName    HoldTime           SystemDescription    SystemCapabilities    EnabledCapabilities 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ eth0       0          66            0                 True      eth0                                                                                                                                            
+ eth82      2          66            0                 True      eth82                                                                                                                                           
+ eth84      4          66            0                 True      eth84                                                                                                                                           
+ eth81      1          10            7                 True      eth81        ba:25:eb:19:d9:a7    eth37       CSW01           1m48.957819686s    FlexSwitch                                                     
+                                                                                                                                                  System                                                         
+ eth83      3          10            9                 True      eth83        b2:67:af:98:c0:f8    eth49       CSW03           1m51.443501505s    FlexSwitch                                                     
+                                                                                                                                                  System                                                         

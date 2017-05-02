@@ -20,8 +20,8 @@ Library  OperatingSystem
 Library  Collections
 
 
-Library	  /home/${USER}/Downloads/srfwtf/OpenSnaproute_Drivers/OpenSnaprouteCliDriver.py  
-Variables   /home/${USER}/Downloads/srfwtf/OpenSnaproute_Variables/ST_Variables.py
+Library	  /home/${USER}/Downloads/srfwtf-master/OpenSnaproute_Drivers/OpenSnaprouteCliDriver.py  
+Variables   /home/${USER}/Downloads/srfwtf-master/OpenSnaproute_Variables/ST_Variables.py
 Suite Setup   Loading Basic Configuration
 Suite Teardown   Deleting Basic Configuration
 #Library   FlexSwitch.py  ${ip_1}  ${port}  WITH NAME  swtch1  
@@ -29,7 +29,7 @@ Suite Teardown   Deleting Basic Configuration
 
 
 *** Variables ***
-${USER}  openswitch
+${USER}  naveen
 ${ip_1}  172.17.0.2
 ${port}  8080
 

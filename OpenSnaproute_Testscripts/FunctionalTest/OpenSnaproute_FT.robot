@@ -15,11 +15,11 @@ Documentation    Test Suite ID 		: 	LINKED_IN_FT_01
 ...              Test-cases List    : 	1.Verify Static-Routing functionality.
 ...              					: 	2.Verify the IPV4 E-BGP neighbourship.
 ...              					: 	3.Verify ipv4-ipv6 E-BGP Neighbourship with PEER-GROUP feature.
-...                                 :   4.Verify the ipv4 Neighbourship with BGP-Authentication.
+...                                 :   4.Verifiy "reconnect-interval interval" and test Neighborship tries re-establish after the interval time
 ...                                 :   5.Verify the "BFD-Timers" functionality.
 ...                                 :   6.Verify vlan basic testing.
 ...              					: 	7.Verify the IPV6 E-BGP neighbourship.
-...                                 :   8.Verifiy "reconnect-interval interval" and test Neighborship tries re-establish after the interval time
+...                                 :   8.Verify the ipv4 Neighbourship with BGP-Authentication.
 
 
 Library   Collections
@@ -28,8 +28,8 @@ Suite Setup   IP_BGP configuration and Flap_verify the interfaces
 Suite Teardown   Delete IPv4 interfaces
 
 
-Library	  /home/${USER}/Downloads/Final_FT_ST/OpenSnaproute/OpenSnaproute_Drivers/OpenSnaprouteCliDriver.py  
-Variables   /home/${USER}/Downloads/Final_FT_ST/OpenSnaproute/OpenSnaproute_Variables/FT_Variable.py
+Library	  /home/${USER}/Downloads/srfwtf-master/OpenSnaproute_Drivers/OpenSnaprouteCliDriver.py  
+Variables   /home/${USER}/Downloads/srfwtf-master/OpenSnaproute_Variables/FT_Variable.py
 
 
 
@@ -58,7 +58,7 @@ Variables   /home/${USER}/Downloads/Final_FT_ST/OpenSnaproute/OpenSnaproute_Vari
 
 
 *** Variables ***
-${USER}  openswitch4
+${USER}  naveen
 
 
 
@@ -87,8 +87,8 @@ Testcase2
     CHECKPOINT  2.1 load BGP configuration on devices and verifying
     TC2:Load-Base-configuration_bgp
     
-    Sleep  120s
-    
+    Sleep  180s
+   
     CHECKPOINT  2.2 Check for the ipv4 bgp-neighbourship on all the devices
     TC2:check_bgp_neighbourship
 
@@ -118,38 +118,30 @@ Testcase3
     CHECKPOINT  3.5 Removing BGP Neighbors
     TC3:Remove-Base-configuration_bgp
 
-	
+
+
 Testcase4
-
-    [Documentation]  IPV4 EBGP-Authentication
-
-    CASE  Verify the ipv4 Neighbourship with BGP-Authentication
+    [Documentation]  Verifiy "reconnect-interval interval" and test Neighborship tries re-establish after the interval time
     
     CHECKPOINT  4.1 load BGP configuration on devices and verifying
     TC4:Load-Base-configuration_bgp
+    Sleep  120s
 
-    CHECKPOINT  4.2 Adding Authentication password to BGP neighbor
-    TC4:Adding-authentication-password
-    Sleep  60s
-
-    CHECKPOINT  4.3 Check the bgp-neighbourship for Established state
+    CHECKPOINT  4.2 Check the bgp-neighbourship for Established state
     TC4:check_bgp_neighbourship
 
-    CHECKPOINT  4.4 Update the bgp neighbor with wrong password
-    TC4:Update-wrong_password
-    Sleep  60s
+    CHECKPOINT  4.3 Update the bgp neighbor with connect retry time as ${retry_time} 
+    TC4:Update a BGP neighbor on a neighbor of a device
 
-    CHECKPOINT  4.5 Check for the bgp-neighbourship which should not be in Established state
-    TC4:check_bgp_neighbourship_on_the_device
+    CHECKPOINT  4.4 Flaping interface on the particular port
+    TC4: Flaping interface on the particular port 
 
-    CHECKPOINT  4.6 Update the bgp neighbor with correct password
-    TC4:Update-correct_password
-    Sleep  60s 
+    DELAY  ${retry_time}  waiting for bgp neighborship until connect retry time
 
-    CHECKPOINT  4.7 Check the bgp-neighbourship for Established state
+    CHECKPOINT  4.5 Check the bgp-neighbourship for Established state
     TC4:check_bgp_neighbourship_on_a_device
 
-    CHECKPOINT  4.8 Remove bgp configuration on devices and verifying
+    CHECKPOINT  4.6 Remove bgp configuration on devices and verifying  
     TC4:Remove-Base-configuration_bgp
 
   
@@ -179,7 +171,7 @@ Testcase5
 
     CHECKPOINT  5.6 Validating BFD for "DOWN" state
     TC5: Validate_bfd_state_DOWN
-    
+    Sleep  120s
     CHECKPOINT  5.7 Check for the bgp-neighbourship which should not be in Established state
     TC5:check_bgp_neighbourship_on_a_device
 
@@ -210,14 +202,14 @@ Testcase6
    
     CHECKPOINT  6.4 Applying VLAN into the interface
     TC6:Applying_vlan_to_interface
-    Sleep  5s
+    Sleep  20s
 
     CHECKPOINT  6.5 Verify vlan status
     TC6:verify_vlan_status
 
     CHECKPOINT  6.6 Check reachability between the vlan-interface using PING
     TC6:ping_test
-    Sleep  5s
+    Sleep  20s
 
     CHECKPOINT  6.7 Deleting VLAN from the interface
     TC6:Deleting_vlan_from_interface
@@ -233,6 +225,7 @@ Testcase6
 
 
 
+
 Testcase7
     [Documentation]  IPV6 Neighbourship 
 
@@ -243,7 +236,7 @@ Testcase7
    
     CHECKPOINT  7.2 load BGP configuration on devices and verifying
     TC7:Load-Base-configuration_bgpv6    
-    Sleep  120s
+    Sleep  180s
 
     CHECKPOINT  7.3 Check for the ipv4 bgp-neighbourship on all the devices
     TC7:check_bgp_neighbourshipv6
@@ -254,31 +247,38 @@ Testcase7
     CHECKPOINT  7.5 Remove bgp configuration on devices and verifying
     TC7:Remove-Base-configuration_bgpv6
 
-	
 Testcase8
-    [Documentation]  Verifiy "reconnect-interval interval" and test Neighborship tries re-establish after the interval time
+
+    [Documentation]  IPV4 EBGP-Authentication
+
+    CASE  Verify the ipv4 Neighbourship with BGP-Authentication
     
     CHECKPOINT  8.1 load BGP configuration on devices and verifying
     TC8:Load-Base-configuration_bgp
-    Sleep  60s
 
-    CHECKPOINT  8.2 Check the bgp-neighbourship for Established state
+    CHECKPOINT  8.2 Adding Authentication password to BGP neighbor
+    TC8:Adding-authentication-password
+    Sleep  180s
+
+    CHECKPOINT  8.3 Check the bgp-neighbourship for Established state
     TC8:check_bgp_neighbourship
 
-    CHECKPOINT  8.3 Update the bgp neighbor with connect retry time as ${retry_time} 
-    TC8:Update a BGP neighbor on a neighbor of a device
+    CHECKPOINT  8.4 Update the bgp neighbor with wrong password
+    TC8:Update-wrong_password
+    Sleep  60s
 
-    CHECKPOINT  8.4 Flaping interface on the particular port
-    TC8: Flaping interface on the particular port 
+    CHECKPOINT  8.5 Check for the bgp-neighbourship which should not be in Established state
+    TC8:check_bgp_neighbourship_on_the_device
 
-    DELAY  ${retry_time}  waiting for bgp neighborship until connect retry time
+    CHECKPOINT  8.6 Update the bgp neighbor with correct password
+    TC8:Update-correct_password
+    Sleep  60s 
 
-    CHECKPOINT  8.5 Check the bgp-neighbourship for Established state
+    CHECKPOINT  8.7 Check the bgp-neighbourship for Established state
     TC8:check_bgp_neighbourship_on_a_device
 
-    CHECKPOINT  8.6 Remove bgp configuration on devices and verifying  
+    CHECKPOINT  8.8 Remove bgp configuration on devices and verifying
     TC8:Remove-Base-configuration_bgp
-
 
 
 *** keywords ***
@@ -383,32 +383,32 @@ TC3:Removing-peer-group
     ${out}=  DELETE_PEER_GROUP  ${device_list[3]}  ${peer_group_id}
     Should Be True  ${out}
 
-#*****************************TestCase4 Keywords**************************************
+#*****************************TestCase8 Keywords**************************************
 
-TC4:Load-Base-configuration_bgp
+TC8:Load-Base-configuration_bgp
     ${out}=  ASSIGN_BGP  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}  ${interface_ip_dict}  ${asnum}  ${routerid}
     Should Be True  ${out}
-TC4:check_bgp_neighbourship
+TC8:check_bgp_neighbourship
     ${out}=  NEIGHBOR_STATE_ALL  Estab  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}  ${interface_ip_dict}
     Should Be True  ${out}
-TC4:Remove-Base-configuration_bgp
+TC8:Remove-Base-configuration_bgp
     ${out}=  REMOVE_BGP  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}  ${interface_ip_dict}  ${asnum}  ${routerid}
     Should Be True  ${out}
-TC4:check_bgp_neighbourship_on_the_device
+TC8:check_bgp_neighbourship_on_the_device
     ${out}=  DEVICE_NEIGHBOR_CHECK  Active  ${device_list[3]}  ${device_list[2]}  ${interface_ip_dict}  
     Should Be True  ${out}
-TC4:check_bgp_neighbourship_on_a_device
+TC8:check_bgp_neighbourship_on_a_device
     ${out}=  DEVICE_NEIGHBOR_CHECK  Estab  ${device_list[3]}  ${device_list[2]}  ${interface_ip_dict}  
     Should Be True  ${out}
-TC4:Adding-authentication-password
+TC8:Adding-authentication-password
     ${out}=  UPDATE_BGP_NEIGHBOR  ${device_list[2]}  ${device3_neighbour2_IP}  ${device3_asnum}  password=${device3_auth_Password_1}
     Should Be True  ${out}
     ${out}=  UPDATE_BGP_NEIGHBOR  ${device_list[3]}  ${device4_neighbour2_IP}  ${device4_asnum}  password=${device4_auth_Password_1}
     Should Be True  ${out}
-TC4:Update-wrong_password
+TC8:Update-wrong_password
     ${out}=  UPDATE_BGP_NEIGHBOR  ${device_list[2]}  ${device3_neighbour2_IP}  ${device3_asnum}  password=${device3_auth_Password_2}
     Should Be True  ${out}
-TC4:Update-correct_password
+TC8:Update-correct_password
     ${out}=  UPDATE_BGP_NEIGHBOR  ${device_list[2]}  ${device3_neighbour2_IP}  ${device3_asnum}  password=${device3_auth_Password_1}
     Should Be True  ${out}
 
@@ -514,25 +514,25 @@ TC6:Deleting_vlan_from_interface
     ${out}=  INTERFACE_VLAN  ${device_list[1]}  ${vlan_id}
     Should Be True  ${out}
 
-TC8:Load-Base-configuration_bgp
+TC4:Load-Base-configuration_bgp
     ${out}=  ASSIGN_BGP  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}  ${interface_ip_dict}  ${asnum}  ${routerid}
     Should Be True  ${out}
-TC8:check_bgp_neighbourship
+TC4:check_bgp_neighbourship
     ${out}=  NEIGHBOR_STATE_ALL  Estab  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}  ${interface_ip_dict}
     Should Be True  ${out}
-TC8:Update a BGP neighbor on a neighbor of a device
+TC4:Update a BGP neighbor on a neighbor of a device
     ${out}=  UPDATE_BGP_NEIGHBOR  ${device_list[0]}  ${device1_neighbour1_IP}  retrytime=${retry_time}
     Should Be True  ${out}
-TC8: Flaping interface on the particular port 
+TC4: Flaping interface on the particular port 
     ${out}=  STATE  ${device_list[1]}  ${device2_interface_1}  DOWN
     Should Be True  ${out}
     Sleep  2s
     ${out}=  STATE  ${device_list[1]}  ${device2_interface_1}  UP
     Should Be True  ${out}
-TC8:check_bgp_neighbourship_on_a_device
+TC4:check_bgp_neighbourship_on_a_device
     ${out}=  DEVICE_NEIGHBOR_CHECK  Estab  ${device_list[0]}  ${device_list[1]}  ${interface_ip_dict}  
     Should Be True  ${out}
-TC8:Remove-Base-configuration_bgp
+TC4:Remove-Base-configuration_bgp
     ${out}=  REMOVE_BGP  ${device_all}  ${fab_count}  ${csw_count}  ${asw_count}  ${fab}  ${csw}  ${asw}  ${interface_ip_dict}  ${asnum}  ${routerid}
     Should Be True  ${out}
 

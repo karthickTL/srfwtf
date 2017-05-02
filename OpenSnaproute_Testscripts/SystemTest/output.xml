@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generated="20170429 17:27:23.328" generator="Robot 3.0.2 (Python 2.7.6 on linux2)">
+<suite source="/home/naveen/Downloads/srfwtf-master/OpenSnaproute_Testscripts/SystemTest/OpenSnaproute_ST.robot" id="s1" name="OpenSnaproute ST">
+<kw type="setup" name="Loading Basic Configuration">
+<kw name="Checkpoint" library="OpenSnaprouteCliDriver">
+<doc>Print the Checkpoint</doc>
+<arguments>
+<arg>Flaping the state</arg>
+</arguments>
+<msg timestamp="20170429 17:27:23.884" html="yes" level="INFO">&lt;font color="blue"&gt;&lt;strong&gt; CHECKPOINT: &lt;/strong&gt; *** Flaping the state &lt;/font&gt;</msg>
+<status status="PASS" endtime="20170429 17:27:23.884" starttime="20170429 17:27:23.883"></status>
+</kw>
+<kw name="Enabling the Interface">
+<kw name="Flap State" library="OpenSnaprouteCliDriver">
+<doc>Makes interface state UP and Down</doc>
+<arguments>
+<arg>${device_all}</arg>
+<arg>${fab_count}</arg>
+<arg>${csw_count}</arg>
+<arg>${asw_count}</arg>
+<arg>${fab}</arg>
+<arg>${csw}</arg>
+<arg>${asw}</arg>
+<arg>${interface_dict}</arg>
+</arguments>
+<assign>
+<var>${out}</var>
+</assign>
+<msg timestamp="20170429 17:27:23.988" level="INFO">Starting new HTTP connection (1): 172.17.0.2</msg>
+<msg timestamp="20170429 17:27:24.221" html="yes" level="INFO">Setting eth1 DOWN</msg>
+<msg timestamp="20170429 17:27:25.223" level="INFO">Starting new HTTP connection (1): 172.17.0.2</msg>
+<msg timestamp="20170429 17:27:25.226" html="yes" level="INFO">Setting eth1 UP</msg>
+<msg timestamp="20170429 17:27:25.227" level="INFO">Starting new HTTP connection (1): 172.17.0.2</msg>
+<msg timestamp="20170429 17:27:25.229" html="yes" level="INFO">Setting eth2 DOWN</msg>
+<msg timestamp="20170429 17:27:26.232" level="INFO">Starting new HTTP connection (1): 172.17.0.2</msg>
+<msg timestamp="20170429 17:27:26.235" html="yes" level="INFO">Setting eth2 UP</msg>
+<msg timestamp="20170429 17:27:26.237" level="INFO">Starting new HTTP connection (1): 172.17.0.2</msg>
+<msg timestamp="20170429 17:27:26.240" html="yes" level="INFO">Setting eth3 DOWN</msg>
+<msg timestamp="20170429 17:27:27.242" level="INFO">Starting new HTTP connection (1): 172.17.0.2</msg>
+<msg timestamp="20170429 17:27:27.246" html="yes" level="INFO">Setting eth3 UP</msg>
+<msg timestamp="20170429 17:27:27.247" level="INFO">Starting new HTTP connection (1): 172.17.0.2</msg>
+<msg timestamp="20170429 17:27:27.251" html="yes" level="INFO">Setting eth4 DOWN</msg>
+<msg timestamp="20170429 17:27:28.253" level="INFO">Starting new HTTP connection (1): 172.17.0.2</msg>
+<msg timestamp="20170429 17:27:28.256" html="yes" level="INFO">Setting eth4 UP</msg>
+<msg timestamp="20170429 17:27:28.258" level="INFO">Starting new HTTP connection (1): 172.17.0.2</msg>
+<msg timestamp="20170429 17:27:28.262" html="yes" level="INFO">Setting eth5 DOWN</msg>
+<msg timestamp="20170429 17:27:29.264" level="INFO">Starting new HTTP connection (1): 172.17.0.2</msg>
+<msg timestamp="20170429 17:27:29.267" html="yes" level="INFO">Setting eth5 UP</msg>
+<msg timestamp="20170429 17:27:29.268" level="INFO">Starting new HTTP connection (1): 172.17.0.2</msg>
+<msg timestamp="20170429 17:27:29.271" html="yes" level="INFO">Setting eth6 DOWN</msg>
+<msg timestamp="20170429 17:27:30.274" level="INFO">Starting new HTTP connection (1): 172.17.0.2</msg>
+<msg timestamp="20170429 17:27:30.277" html="yes" level="INFO">Setting eth6 UP</msg>
+<msg timestamp="20170429 17:27:30.279" level="INFO">Starting new HTTP connection (1): 172.17.0.2</msg>
+<msg timestamp="20170429 17:27:30.282" html="yes" level="INFO">Setting eth7 DOWN</msg>
+<msg timestamp="20170429 17:27:31.285" level="INFO">Starting new HTTP connection (1): 172.17.0.2</msg>
+<msg timestamp="20170429 17:27:31.288" html="yes" level="INFO">Setting eth7 UP</msg>
+<msg timestamp="20170429 17:27:31.289" level="INFO">Starting new HTTP connection (1): 172.17.0.2</msg>
+<msg timestamp="20170429 17:27:31.291" html="yes" level="INFO">Setting eth8 DOWN</msg>
+<msg timestamp="20170429 17:27:32.293" level="INFO">Starting new HTTP connection (1): 172.17.0.2</msg>
+<msg timestamp="20170429 17:27:32.297" html="yes" level="INFO">Setting eth8 UP</msg>
+<msg timestamp="20170429 17:27:32.299" level="INFO">Starting new HTTP connection (1): 172.17.0.3</msg>
+<msg timestamp="20170429 17:27:32.723" html="yes" level="INFO">Setting eth9 DOWN</msg>
+<msg timestamp="20170429 17:27:33.726" level="INFO">Starting new HTTP connection (1): 172.17.0.3</msg>
+<msg timestamp="20170429 17:27:33.740" html="yes" level="INFO">Setting eth9 UP</msg>
+<msg timestamp="20170429 17:27:33.741" level="INFO">Starting new HTTP connection (1): 172.17.0.3</msg>
+<msg timestamp="20170429 17:27:33.744" html="yes" level="INFO">Setting eth10 DOWN</msg>
+<msg timestamp="20170429 17:27:34.745" level="INFO">Starting new HTTP connection (1): 172.17.0.3</msg>
+<msg timestamp="20170429 17:27:34.747" html="yes" level="INFO">Setting eth10 UP</msg>
+<msg timestamp="20170429 17:27:34.748" level="INFO">Starting new HTTP connection (1): 172.17.0.3</msg>
+<msg timestamp="20170429 17:27:34.750" html="yes" level="INFO">Setting eth11 DOWN</msg>
+<msg timestamp="20170429 17:27:35.752" level="INFO">Starting new HTTP connection (1): 172.17.0.3</msg>
+<msg timestamp="20170429 17:27:35.755" html="yes" level="INFO">Setting eth11 UP</msg>
+<msg timestamp="20170429 17:27:35.756" level="INFO">Starting new HTTP connection (1): 172.17.0.3</msg>
+<msg timestamp="20170429 17:27:35.757" html="yes" level="INFO">Setting eth12 DOWN</msg>
+<msg timestamp="20170429 17:27:36.760" level="INFO">Starting new HTTP connection (1): 172.17.0.3</msg>
+<msg timestamp="20170429 17:27:36.764" html="yes" level="INFO">Setting eth12 UP</msg>
+<msg timestamp="20170429 17:27:36.765" level="INFO">Starting new HTTP connection (1): 172.17.0.3</msg>
+<msg timestamp="20170429 17:27:36.769" html="yes" level="INFO">Setting eth13 DOWN</msg>
+<msg timestamp="20170429 17:27:37.770" level="INFO">Starting new HTTP connection (1): 172.17.0.3</msg>
+<msg timestamp="20170429 17:27:37.773" html="yes" level="INFO">Setting eth13 UP</msg>
+<msg timestamp="20170429 17:27:37.774" level="INFO">Starting new HTTP connection (1): 172.17.0.3</msg>
+<msg timestamp="20170429 17:27:37.776" html="yes" level="INFO">Setting eth14 DOWN</msg>
+<msg timestamp="20170429 17:27:38.778" level="INFO">Starting new HTTP connection (1): 172.17.0.3</msg>
+<msg timestamp="20170429 17:27:38.782" html="yes" level="INFO">Setting eth14 UP</msg>
+<msg timestamp="20170429 17:27:38.783" level="INFO">Starting new HTTP connection (1): 172.17.0.3</msg>
+<msg timestamp="20170429 17:27:38.787" html="yes" level="INFO">Setting eth15 DOWN</msg>
+<msg timestamp="20170429 17:27:39.790" level="INFO">Starting new HTTP connection (1): 172.17.0.3</msg>
+<msg timestamp="20170429 17:27:39.793" html="yes" level="INFO">Setting eth15 UP</msg>
+<msg timestamp="20170429 17:27:39.795" level="INFO">Starting new HTTP connection (1): 172.17.0.3</msg>
+<msg timestamp="20170429 17:27:39.798" html="yes" level="INFO">Setting eth16 DOWN</msg>
+<msg timestamp="20170429 17:27:40.801" level="INFO">Starting new HTTP connection (1): 172.17.0.3</msg>
+<msg timestamp="20170429 17:27:40.804" html="yes" level="INFO">Setting eth16 UP</msg>
+<msg timestamp="20170429 17:27:40.806" level="INFO">Starting new HTTP connection (1): 172.17.0.4</msg>
+<msg timestamp="20170429 17:27:41.384" html="yes" level="INFO">Setting eth17 DOWN</msg>
+<msg timestamp="20170429 17:27:42.386" level="INFO">Starting new HTTP connection (1): 172.17.0.4</msg>
+<msg timestamp="20170429 17:27:42.390" html="yes" level="INFO">Setting eth17 UP</msg>
+<msg timestamp="20170429 17:27:42.393" level="INFO">Starting new HTTP connection (1): 172.17.0.4</msg>
+<msg timestamp="20170429 17:27:42.397" html="yes" level="INFO">Setting eth18 DOWN</msg>
+<msg timestamp="20170429 17:27:43.400" level="INFO">Starting new HTTP connection (1): 172.17.0.4</msg>
+<msg timestamp="20170429 17:27:43.403" html="yes" level="INFO">Setting eth18 UP</msg>
+<msg timestamp="20170429 17:27:43.405" level="INFO">Starting new HTTP connection (1): 172.17.0.4</msg>
+<msg timestamp="20170429 17:27:43.408" html="yes" level="INFO">Setting eth19 DOWN</msg>
+<msg timestamp="20170429 17:27:44.410" level="INFO">Starting new HTTP connection (1): 172.17.0.4</msg>
+<msg timestamp="20170429 17:27:44.412" html="yes" level="INFO">Setting eth19 UP</msg>
+<msg timestamp="20170429 17:27:44.413" level="INFO">Starting new HTTP connection (1): 172.17.0.4</msg>
+<msg timestamp="20170429 17:27:44.416" html="yes" level="INFO">Setting eth20 DOWN</msg>
+<msg timestamp="20170429 17:27:45.418" level="INFO">Starting new HTTP connection (1): 172.17.0.4</msg>
+<msg timestamp="20170429 17:27:45.435" html="yes" level="INFO">Setting eth20 UP</msg>
+<msg timestamp="20170429 17:27:45.437" level="INFO">Starting new HTTP connection (1): 172.17.0.4</msg>
+<msg timestamp="20170429 17:27:45.440" html="yes" level="INFO">Setting eth21 DOWN</msg>
+<msg timestamp="20170429 17:27:46.443" level="INFO">Starting new HTTP connection (1): 172.17.0.4</msg>
+<msg timestamp="20170429 17:27:46.447" html="yes" level="INFO">Setting eth21 UP</msg>
+<msg timestamp="20170429 17:27:46.448" level="INFO">Starting new HTTP connection (1): 172.17.0.4</msg>
+<msg timestamp="20170429 17:27:46.452" html="yes" level="INFO">Setting eth22 DOWN</msg>
+<msg timestamp="20170429 17:27:47.454" level="INFO">Starting new HTTP connection (1): 172.17.0.4</msg>
+<msg timestamp="20170429 17:27:47.457" html="yes" level="INFO">Setting eth22 UP</msg>
+<msg timestamp="20170429 17:27:47.459" level="INFO">Starting new HTTP connection (1): 172.17.0.4</msg>
+<msg timestamp="20170429 17:27:47.462" html="yes" level="INFO">Setting eth23 DOWN</msg>
+<msg timestamp="20170429 17:27:48.463" level="INFO">Starting new HTTP connection (1): 172.17.0.4</msg>
+<msg timestamp="20170429 17:27:48.467" html="yes" level="INFO">Setting eth23 UP</msg>
+<msg timestamp="20170429 17:27:48.468" level="INFO">Starting new HTTP connection (1): 172.17.0.4</msg>
+<msg timestamp="20170429 17:27:48.472" html="yes" level="INFO">Setting eth24 DOWN</msg>
+<msg timestamp="20170429 17:27:49.475" level="INFO">Starting new HTTP connection (1): 172.17.0.4</msg>
+<msg timestamp="20170429 17:27:49.479" html="yes" level="INFO">Setting eth24 UP</msg>
+<msg timestamp="20170429 17:27:49.481" level="INFO">Starting new HTTP connection (1): 172.17.0.5</msg>
+<msg timestamp="20170429 17:27:49.767" html="yes" level="INFO">Setting eth25 DOWN</msg>
+<msg timestamp="20170429 17:27:50.770" level="INFO">Starting new HTTP connection (1): 172.17.0.5</msg>
+<msg timestamp="20170429 17:27:50.781" html="yes" level="INFO">Setting eth25 UP</msg>
+<msg timestamp="20170429 17:27:50.783" level="INFO">Starting new HTTP connection (1): 172.17.0.5</msg>
+<msg timestamp="20170429 17:27:50.787" html="yes" level="INFO">Setting eth26 DOWN</msg>
+<msg timestamp="20170429 17:27:51.790" level="INFO">Starting new HTTP connection (1): 172.17.0.5</msg>
+<msg timestamp="20170429 17:27:51.793" html="yes" level="INFO">Setting eth26 UP</msg>
+<msg timestamp="20170429 17:27:51.795" level="INFO">Starting new HTTP connection (1): 172.17.0.5</msg>
+<msg timestamp="20170429 17:27:51.799" html="yes" level="INFO">Setting eth27 DOWN</msg>
+<msg timestamp="20170429 17:27:52.802" level="INFO">Starting new HTTP connection (1): 172.17.0.5</msg>
+<msg timestamp="20170429 17:27:52.805" html="yes" level="INFO">Setting eth27 UP</msg>
+<msg timestamp="20170429 17:27:52.807" level="INFO">Starting new HTTP connection (1): 172.17.0.5</msg>
+<msg timestamp="20170429 17:27:52.810" html="yes" level="INFO">Setting eth28 DOWN</msg>
+<msg timestamp="20170429 17:27:53.813" level="INFO">Starting new HTTP connection (1): 172.17.0.5</msg>
+<msg timestamp="20170429 17:27:53.817" html="yes" level="INFO">Setting eth28 UP</msg>
+<msg timestamp="20170429 17:27:53.818" level="INFO">Starting new HTTP connection (1): 172.17.0.5</msg>
+<msg timestamp="20170429 17:27:53.822" html="yes" level="INFO">Setting eth29 DOWN</msg>
+<msg timestamp="20170429 17:27:54.824" level="INFO">Starting new HTTP connection (1): 172.17.0.5</msg>
+<msg timestamp="20170429 17:27:54.827" html="yes" level="INFO">Setting eth29 UP</msg>
+<msg timestamp="20170429 17:27:54.829" level="INFO">Starting new HTTP connection (1): 172.17.0.5</msg>
+<msg timestamp="20170429 17:27:54.832" html="yes" level="INFO">Setting eth30 DOWN</msg>
+<msg timestamp="20170429 17:27:55.835" level="INFO">Starting new HTTP connection (1): 172.17.0.5</msg>
+<msg timestamp="20170429 17:27:55.838" html="yes" level="INFO">Setting eth30 UP</msg>
+<msg timestamp="20170429 17:27:55.839" level="INFO">Starting new HTTP connection (1): 172.17.0.5</msg>
+<msg timestamp="20170429 17:27:55.841" html="yes" level="INFO">Setting eth31 DOWN</msg>
+<msg timestamp="20170429 17:27:56.843" level="INFO">Starting new HTTP connection (1): 172.17.0.5</msg>
+<msg timestamp="20170429 17:27:56.845" html="yes" level="INFO">Setting eth31 UP</msg>
+<msg timestamp="20170429 17:27:56.846" level="INFO">Starting new HTTP connection (1): 172.17.0.5</msg>
+<msg timestamp="20170429 17:27:56.849" html="yes" level="INFO">Setting eth32 DOWN</msg>
+<msg timestamp="20170429 17:27:57.851" level="INFO">Starting new HTTP connection (1): 172.17.0.5</msg>
+<msg timestamp="20170429 17:27:57.855" html="yes" level="INFO">Setting eth32 UP</msg>
+<msg timestamp="20170429 17:27:57.857" level="INFO">Starting new HTTP connection (1): 172.17.0.6</msg>
+<msg timestamp="20170429 17:27:58.191" html="yes" level="INFO">Setting eth33 DOWN</msg>
+<msg timestamp="20170429 17:27:59.193" level="INFO">Starting new HTTP connection (1): 172.17.0.6</msg>
+<msg timestamp="20170429 17:27:59.197" html="yes" level="INFO">Setting eth33 UP</msg>
+<msg timestamp="20170429 17:27:59.199" level="INFO">Starting new HTTP connection (1): 172.17.0.6</msg>
+<msg timestamp="20170429 17:27:59.202" html="yes" level="INFO">Setting eth34 DOWN</msg>
+<msg timestamp="20170429 17:28:00.205" level="INFO">Starting new HTTP connection (1): 172.17.0.6</msg>
+<msg timestamp="20170429 17:28:00.208" html="yes" level="INFO">Setting eth34 UP</msg>
+<msg timestamp="20170429 17:28:00.209" level="INFO">Starting new HTTP connection (1): 172.17.0.6</msg>
+<msg timestamp="20170429 17:28:00.212" html="yes" level="INFO">Setting eth35 DOWN</msg>
+<msg timestamp="20170429 17:28:01.214" level="INFO">Starting new HTTP connection (1): 172.17.0.6</msg>
+<msg timestamp="20170429 17:28:01.217" html="yes" level="INFO">Setting eth35 UP</msg>
+<msg timestamp="20170429 17:28:01.218" level="INFO">Starting new HTTP connection (1): 172.17.0.6</msg>
+<msg timestamp="20170429 17:28:01.221" html="yes" level="INFO">Setting eth36 DOWN</msg>
+<msg timestamp="20170429 17:28:02.224" level="INFO">Starting new HTTP connection (1): 172.17.0.6</msg>
+<msg timestamp="20170429 17:28:02.227" html="yes" level="INFO">Setting eth36 UP</msg>
+<msg timestamp="20170429 17:28:02.229" level="INFO">Starting new HTTP connection (1): 172.17.0.6</msg>
+<msg timestamp="20170429 17:28:02.244" html="yes" level="INFO">Setting eth37 DOWN</msg>
+<msg timestamp="20170429 17:28:03.246" level="INFO">Starting new HTTP connection (1): 172.17.0.6</msg>
+<msg timestamp="20170429 17:28:03.250" html="yes" level="INFO">Setting eth37 UP</msg>
+<msg timestamp="20170429 17:28:03.251" level="INFO">Starting new HTTP connection (1): 172.17.0.6</msg>
+<msg timestamp="20170429 17:28:03.254" html="yes" level="INFO">Setting eth38 DOWN</msg>
+<msg timestamp="20170429 17:28:04.257" level="INFO">Starting new HTTP connection (1): 172.17.0.6</msg>
+<msg timestamp="20170429 17:28:04.261" html="yes" level="INFO">Setting eth38 UP</msg>
+<msg timestamp="20170429 17:28:04.263" level="INFO">Starting new HTTP connection (1): 172.17.0.7</msg>
+<msg timestamp="20170429 17:28:04.693" html="yes" level="INFO">Setting eth39 DOWN</msg>
+<msg timestamp="20170429 17:28:05.696" level="INFO">Starting new HTTP connection (1): 172.17.0.7</msg>
+<msg timestamp="20170429 17:28:05.700" html="yes" level="INFO">Setting eth39 UP</msg>
+<msg timestamp="20170429 17:28:05.702" level="INFO">Starting new HTTP connection (1): 172.17.0.7</msg>
+<msg timestamp="20170429 17:28:05.706" html="yes" level="INFO">Setting eth40 DOWN</msg>
+<msg timestamp="20170429 17:28:06.708" level="INFO">Starting new HTTP connection (1): 172.17.0.7</msg>
+<msg timestamp="20170429 17:28:06.712" html="yes" level="INFO">Setting eth40 UP</msg>
+<msg timestamp="20170429 17:28:06.713" level="INFO">Starting new HTTP connection (1): 172.17.0.7</msg>
+<msg timestamp="20170429 17:28:06.717" html="yes" level="INFO">Setting eth41 DOWN</msg>
+<msg timestamp="20170429 17:28:07.720" level="INFO">Starting new HTTP connection (1): 172.17.0.7</msg>
+<msg timestamp="20170429 17:28:07.723" html="yes" level="INFO">Setting eth41 UP</msg>
+<msg timestamp="20170429 17:28:07.725" level="INFO">Starting new HTTP connection (1): 172.17.0.7</msg>
+<msg timestamp="20170429 17:28:07.729" html="yes" level="INFO">Setting eth42 DOWN</msg>
+<msg timestamp="20170429 17:28:08.730" level="INFO">Starting new HTTP connection (1): 172.17.0.7</msg>
+<msg timestamp="20170429 17:28:08.734" html="yes" level="INFO">Setting eth42 UP</msg>
+<msg timestamp="20170429 17:28:08.735" level="INFO">Starting new HTTP connection (1): 172.17.0.7</msg>
+<msg timestamp="20170429 17:28:08.738" html="yes" level="INFO">Setting eth43 DOWN</msg>
+<msg timestamp="20170429 17:28:09.742" level="INFO">Starting new HTTP connection (1): 172.17.0.7</msg>
+<msg timestamp="20170429 17:28:09.745" html="yes" level="INFO">Setting eth43 UP</msg>
+<msg timestamp="20170429 17:28:09.746" level="INFO">Starting new HTTP connection (1): 172.17.0.7</msg>
+<msg timestamp="20170429 17:28:09.749" html="yes" level="INFO">Setting eth44 DOWN</msg>
+<msg timestamp="20170429 17:28:10.751" level="INFO">Starting new HTTP connection (1): 172.17.0.7</msg>
+<msg timestamp="20170429 17:28:10.772" html="yes" level="INFO">Setting eth44 UP</msg>
+<msg timestamp="20170429 17:28:10.773" level="INFO">Starting new HTTP connection (1): 172.17.0.8</msg>
+<msg timestamp="20170429 17:28:11.101" html="yes" level="INFO">Setting eth45 DOWN</msg>
+<msg timestamp="20170429 17:28:12.104" level="INFO">Starting new HTTP connection (1): 172.17.0.8</msg>
+<msg timestamp="20170429 17:28:12.108" html="yes" level="INFO">Setting eth45 UP</msg>
+<msg timestamp="20170429 17:28:12.109" level="INFO">Starting new HTTP connection (1): 172.17.0.8</msg>
+<msg timestamp="20170429 17:28:12.116" html="yes" level="INFO">Setting eth46 DOWN</msg>
+<msg timestamp="20170429 17:28:13.119" level="INFO">Starting new HTTP connection (1): 172.17.0.8</msg>
+<msg timestamp="20170429 17:28:13.121" html="yes" level="INFO">Setting eth46 UP</msg>
+<msg timestamp="20170429 17:28:13.122" level="INFO">Starting new HTTP connection (1): 172.17.0.8</msg>
+<msg timestamp="20170429 17:28:13.125" html="yes" level="INFO">Setting eth47 DOWN</msg>
+<msg timestamp="20170429 17:28:14.128" level="INFO">Starting new HTTP connection (1): 172.17.0.8</msg>
+<msg timestamp="20170429 17:28:14.131" html="yes" level="INFO">Setting eth47 UP</msg>
+<msg timestamp="20170429 17:28:14.133" level="INFO">Starting new HTTP connection (1): 172.17.0.8</msg>
+<msg timestamp="20170429 17:28:14.136" html="yes" level="INFO">Setting eth48 DOWN</msg>
+<msg timestamp="20170429 17:28:15.139" level="INFO">Starting new HTTP connection (1): 172.17.0.8</msg>
+<msg timestamp="20170429 17:28:15.142" html="yes" level="INFO">Setting eth48 UP</msg>
+<msg timestamp="20170429 17:28:15.144" level="INFO">Starting new HTTP connection (1): 172.17.0.8</msg>
+<msg timestamp="20170429 17:28:15.147" html="yes" level="INFO">Setting eth49 DOWN</msg>
+<msg timestamp="20170429 17:28:16.150" level="INFO">Starting new HTTP connection (1): 172.17.0.8</msg>
+<msg timestamp="20170429 17:28:16.153" html="yes" level="INFO">Setting eth49 UP</msg>
+<msg timestamp="20170429 17:28:16.154" level="INFO">Starting new HTTP connection (1): 172.17.0.8</msg>
+<msg timestamp="20170429 17:28:16.158" html="yes" level="INFO">Setting eth50 DOWN</msg>
+<msg timestamp="20170429 17:28:17.160" level="INFO">Starting new HTTP connection (1): 172.17.0.8</msg>
+<msg timestamp="20170429 17:28:17.163" html="yes" level="INFO">Setting eth50 UP</msg>
+<msg timestamp="20170429 17:28:17.164" level="INFO">Starting new HTTP connection (1): 172.17.0.9</msg>
+<msg timestamp="20170429 17:28:17.485" html="yes" level="INFO">Setting eth51 DOWN</msg>
+<msg timestamp="20170429 17:28:18.488" level="INFO">Starting new HTTP connection (1): 172.17.0.9</msg>
+<msg timestamp="20170429 17:28:18.490" html="yes" level="INFO">Setting eth51 UP</msg>
+<msg timestamp="20170429 17:28:18.491" level="INFO">Starting new HTTP connection (1): 172.17.0.9</msg>
+<msg timestamp="20170429 17:28:18.493" html="yes" level="INFO">Setting eth52 DOWN</msg>
+<msg timestamp="20170429 17:28:19.495" level="INFO">Starting new HTTP connection (1): 172.17.0.9</msg>
+<msg timestamp="20170429 17:28:19.509" html="yes" level="INFO">Setting eth52 UP</msg>
+<msg timestamp="20170429 17:28:19.511" level="INFO">Starting new HTTP connection (1): 172.17.0.9</msg>
+<msg timestamp="20170429 17:28:19.514" html="yes" level="INFO">Setting eth53 DOWN</msg>
+<msg timestamp="20170429 17:28:20.517" level="INFO">Starting new HTTP connection (1): 172.17.0.9</msg>
+<msg timestamp="20170429 17:28:20.521" html="yes" level="INFO">Setting eth53 UP</msg>
+<msg timestamp="20170429 17:28:20.523" level="INFO">Starting new HTTP connection (1): 172.17.0.9</msg>
+<msg timestamp="20170429 17:28:20.526" html="yes" level="INFO">Setting eth54 DOWN</msg>
+<msg timestamp="20170429 17:28:21.528" level="INFO">Starting new HTTP connection (1): 172.17.0.9</msg>
+<msg timestamp="20170429 17:28:21.532" html="yes" level="INFO">Setting eth54 UP</msg>
+<msg timestamp="20170429 17:28:21.534" level="INFO">Starting new HTTP connection (1): 172.17.0.9</msg>
+<msg timestamp="20170429 17:28:21.537" html="yes" level="INFO">Setting eth55 DOWN</msg>
+<msg timestamp="20170429 17:28:22.539" level="INFO">Starting new HTTP connection (1): 172.17.0.9</msg>
+<msg timestamp="20170429 17:28:22.541" html="yes" level="INFO">Setting eth55 UP</msg>
+<msg timestamp="20170429 17:28:22.542" level="INFO">Starting new HTTP connection (1): 172.17.0.9</msg>
+<msg timestamp="20170429 17:28:22.543" html="yes" level="INFO">Setting eth56 DOWN</msg>
+<msg timestamp="20170429 17:28:23.546" level="INFO">Starting new HTTP connection (1): 172.17.0.9</msg>
+<msg timestamp="20170429 17:28:23.549" html="yes" level="INFO">Setting eth56 UP</msg>
+<msg timestamp="20170429 17:28:23.552" level="INFO">Starting new HTTP connection (1): 172.17.0.10</msg>
+<msg timestamp="20170429 17:28:23.833" html="yes" level="INFO">Setting eth57 DOWN</msg>
+<msg timestamp="20170429 17:28:24.836" level="INFO">Starting new HTTP connection (1): 172.17.0.10</msg>
+<msg timestamp="20170429 17:28:24.839" html="yes" level="INFO">Setting eth57 UP</msg>
+<msg timestamp="20170429 17:28:24.841" level="INFO">Starting new HTTP connection (1): 172.17.0.10</msg>
+<msg timestamp="20170429 17:28:24.844" html="yes" level="INFO">Setting eth58 DOWN</msg>
+<msg timestamp="20170429 17:28:25.847" level="INFO">Starting new HTTP connection (1): 172.17.0.10</msg>
+<msg timestamp="20170429 17:28:25.850" html="yes" level="INFO">Setting eth58 UP</msg>
+<msg timestamp="20170429 17:28:25.852" level="INFO">Starting new HTTP connection (1): 172.17.0.10</msg>
+<msg timestamp="20170429 17:28:25.855" html="yes" level="INFO">Setting eth59 DOWN</msg>
+<msg timestamp="20170429 17:28:26.858" level="INFO">Starting new HTTP connection (1): 172.17.0.10</msg>
+<msg timestamp="20170429 17:28:26.862" html="yes" level="INFO">Setting eth59 UP</msg>
+<msg timestamp="20170429 17:28:26.864" level="INFO">Starting new HTTP connection (1): 172.17.0.10</msg>
+<msg timestamp="20170429 17:28:26.867" html="yes" level="INFO">Setting eth60 DOWN</msg>
+<msg timestamp="20170429 17:28:27.870" level="INFO">Starting new HTTP connection (1): 172.17.0.10</msg>
+<msg timestamp="20170429 17:28:27.873" html="yes" level="INFO">Setting eth60 UP</msg>
+<msg timestamp="20170429 17:28:27.875" level="INFO">Starting new HTTP connection (1): 172.17.0.10</msg>
+<msg timestamp="20170429 17:28:27.878" html="yes" level="INFO">Setting eth61 DOWN</msg>
+<msg timestamp="20170429 17:28:28.879" level="INFO">Starting new HTTP connection (1): 172.17.0.10</msg>
+<msg timestamp="20170429 17:28:28.882" html="yes" level="INFO">Setting eth61 UP</msg>
+<msg timestamp="20170429 17:28:28.882" level="INFO">Starting new HTTP connection (1): 172.17.0.10</msg>
+<msg timestamp="20170429 17:28:28.884" html="yes" level="INFO">Setting eth62 DOWN</msg>
+<msg timestamp="20170429 17:28:29.886" level="INFO">Starting new HTTP connection (1): 172.17.0.10</msg>
+<msg timestamp="20170429 17:28:29.890" html="yes" level="INFO">Setting eth62 UP</msg>
+<msg timestamp="20170429 17:28:29.892" level="INFO">Starting new HTTP connection (1): 172.17.0.11</msg>
+<msg timestamp="20170429 17:28:30.910" level="INFO">Starting new HTTP connection (1): 172.17.0.11</msg>
+<msg timestamp="20170429 17:28:30.913" level="INFO">Starting new HTTP connection (1): 172.17.0.11</msg>
+<msg timestamp="20170429 17:28:31.917" level="INFO">Starting new HTTP connection (1): 172.17.0.11</msg>
+<msg timestamp="20170429 17:28:31.920" level="INFO">Starting new HTTP connection (1): 172.17.0.11</msg>
+<msg timestamp="20170429 17:28:32.925" level="INFO">Starting new HTTP connection (1): 172.17.0.11</msg>
+<msg timestamp="20170429 17:28:32.928" level="INFO">Starting new HTTP connection (1): 172.17.0.11</msg>
+<msg timestamp="20170429 17:28:33.931" level="INFO">Starting new HTTP connection (1): 172.17.0.11</msg>
+<msg timestamp="20170429 17:28:33.933" level="INFO">Starting new HTTP connection (1): 172.17.0.11</msg>
+<msg timestamp="20170429 17:28:34.936" level="INFO">Starting new HTTP connection (1): 172.17.0.11</msg>
+<msg timestamp="20170429 17:28:34.939" level="INFO">Starting new HTTP connection (1): 172.17.0.11</msg>
+<msg timestamp="20170429 17:28:35.943" level="INFO">Starting new HTTP connection (1): 172.17.0.11</msg>
+<msg timestamp="20170429 17:28:35.946" level="INFO">Starting new HTTP connection (1): 172.17.0.12</msg>
+<msg timestamp="20170429 17:28:36.176" html="yes" level="INFO">Setting eth69 DOWN</msg>
+<msg timestamp="20170429 17:28:37.179" level="INFO">Starting new HTTP connection (1): 172.17.0.12</msg>
+<msg timestamp="20170429 17:28:37.183" html="yes" level="INFO">Setting eth69 UP</msg>
+<msg timestamp="20170429 17:28:37.184" level="INFO">Starting new HTTP connection (1): 172.17.0.12</msg>
+<msg timestamp="20170429 17:28:37.188" html="yes" level="INFO">Setting eth70 DOWN</msg>
+<msg timestamp="20170429 17:28:38.190" level="INFO">Starting new HTTP connection (1): 172.17.0.12</msg>
+<msg timestamp="20170429 17:28:38.193" html="yes" level="INFO">Setting eth70 UP</msg>
+<msg timestamp="20170429 17:28:38.194" level="INFO">Starting new HTTP connection (1): 172.17.0.12</msg>
+<msg timestamp="20170429 17:28:38.198" html="yes" level="INFO">Setting eth71 DOWN</msg>
+<msg timestamp="20170429 17:28:39.201" level="INFO">Starting new HTTP connection (1): 172.17.0.12</msg>
+<msg timestamp="20170429 17:28:39.204" html="yes" level="INFO">Setting eth71 UP</msg>
+<msg timestamp="20170429 17:28:39.206" level="INFO">Starting new HTTP connection (1): 172.17.0.12</msg>
+<msg timestamp="20170429 17:28:39.210" html="yes" level="INFO">Setting eth72 DOWN</msg>
+<msg timestamp="20170429 17:28:40.212" level="INFO">Starting new HTTP connection (1): 172.17.0.12</msg>
+<msg timestamp="20170429 17:28:40.215" html="yes" level="INFO">Setting eth72 UP</msg>
+<msg timestamp="20170429 17:28:40.217" level="INFO">Starting new HTTP connection (1): 172.17.0.12</msg>
+<msg timestamp="20170429 17:28:40.220" html="yes" level="INFO">Setting eth73 DOWN</msg>
+<status status="FAIL" endtime="20170429 17:28:40.501" starttime="20170429 17:27:23.884"></status>
+</kw>
+<status status="FAIL" endtime="20170429 17:28:40.502" starttime="20170429 17:27:23.884"></status>
+</kw>
+<status status="FAIL" endtime="20170429 17:28:40.502" starttime="20170429 17:27:23.883"></status>
+</kw>
+<test id="s1-t1" name="Testcase1">
+<doc>Verify IPv4 BGP on all devices</doc>
+<tags>
+<tag>robot-exit</tag>
+</tags>
+<status status="FAIL" endtime="20170429 17:28:40.524" critical="yes" starttime="20170429 17:28:40.502">Test execution stopped due to a fatal error.</status>
+</test>
+<test id="s1-t2" name="Testcase2">
+<doc>Trigger link failure and link recovery.</doc>
+<tags>
+<tag>robot-exit</tag>
+</tags>
+<status status="FAIL" endtime="20170429 17:28:40.525" critical="yes" starttime="20170429 17:28:40.525">Test execution stopped due to a fatal error.</status>
+</test>
+<test id="s1-t3" name="Testcase3">
+<doc>clear BGP Process</doc>
+<tags>
+<tag>robot-exit</tag>
+</tags>
+<status status="FAIL" endtime="20170429 17:28:40.526" critical="yes" starttime="20170429 17:28:40.525">Test execution stopped due to a fatal error.</status>
+</test>
+<kw type="teardown" name="Deleting Basic Configuration">
+<kw name="Checkpoint" library="OpenSnaprouteCliDriver">
+<doc>Print the Checkpoint</doc>
+<arguments>
+<arg>Removing configuration on devices and verifying</arg>
+</arguments>
+<msg timestamp="20170429 17:28:40.527" html="yes" level="INFO">&lt;font color="blue"&gt;&lt;strong&gt; CHECKPOINT: &lt;/strong&gt; *** Removing configuration on devices and verifying &lt;/font&gt;</msg>
+<status status="PASS" endtime="20170429 17:28:40.527" starttime="20170429 17:28:40.526"></status>
+</kw>
+<kw name="Remove-Base-configuration">
+<kw name="Checkpoint" library="OpenSnaprouteCliDriver">
+<doc>Print the Checkpoint</doc>
+<arguments>
+<arg>Removing IP and verifying</arg>
+</arguments>
+<msg timestamp="20170429 17:28:40.527" html="yes" level="INFO">&lt;font color="blue"&gt;&lt;strong&gt; CHECKPOINT: &lt;/strong&gt; *** Removing IP and verifying &lt;/font&gt;</msg>
+<status status="PASS" endtime="20170429 17:28:40.527" starttime="20170429 17:28:40.527"></status>
+</kw>
+<kw name="Remove Ip" library="OpenSnaprouteCliDriver">
+<doc>Deletes the interfaces and IPv4 address from the routers using SDK function</doc>
+<arguments>
+<arg>${device_all}</arg>
+<arg>${fab_count}</arg>
+<arg>${csw_count}</arg>
+<arg>${asw_count}</arg>
+<arg>${subnet}</arg>
+<arg>${fab}</arg>
+<arg>${csw}</arg>
+<arg>${asw}</arg>
+<arg>${interface_dict}</arg>
+<arg>${interface_ip_dict}</arg>
+</arguments>
+<assign>
+<var>${out}</var>
+</assign>
+<msg timestamp="20170429 17:28:40.528" html="yes" level="INFO">login to FAB05 and remove IP address </msg>
+<msg timestamp="20170429 17:28:40.529" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: IP removed successfully on FAB05 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.529" html="yes" level="INFO">login to FAB06 and remove IP address </msg>
+<msg timestamp="20170429 17:28:40.529" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: IP removed successfully on FAB06 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.529" html="yes" level="INFO">login to FAB07 and remove IP address </msg>
+<msg timestamp="20170429 17:28:40.529" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: IP removed successfully on FAB07 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.529" html="yes" level="INFO">login to FAB08 and remove IP address </msg>
+<msg timestamp="20170429 17:28:40.529" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: IP removed successfully on FAB08 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.529" html="yes" level="INFO">login to CSW01 and remove IP address </msg>
+<msg timestamp="20170429 17:28:40.530" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: IP removed successfully on CSW01 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.530" html="yes" level="INFO">login to CSW02 and remove IP address </msg>
+<msg timestamp="20170429 17:28:40.530" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: IP removed successfully on CSW02 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.530" html="yes" level="INFO">login to CSW03 and remove IP address </msg>
+<msg timestamp="20170429 17:28:40.530" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: IP removed successfully on CSW03 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.530" html="yes" level="INFO">login to CSW04 and remove IP address </msg>
+<msg timestamp="20170429 17:28:40.530" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: IP removed successfully on CSW04 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.530" html="yes" level="INFO">login to CSW05 and remove IP address </msg>
+<msg timestamp="20170429 17:28:40.530" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: IP removed successfully on CSW05 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.531" html="yes" level="INFO">login to CSW06 and remove IP address </msg>
+<msg timestamp="20170429 17:28:40.531" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: IP removed successfully on CSW06 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.531" html="yes" level="INFO">login to CSW07 and remove IP address </msg>
+<msg timestamp="20170429 17:28:40.531" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: IP removed successfully on CSW07 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.531" html="yes" level="INFO">login to CSW08 and remove IP address </msg>
+<msg timestamp="20170429 17:28:40.531" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: IP removed successfully on CSW08 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.532" html="yes" level="INFO">login to ASW01 and remove IP address </msg>
+<msg timestamp="20170429 17:28:40.532" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: IP removed successfully on ASW01 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.532" html="yes" level="INFO">login to ASW02 and remove IP address </msg>
+<msg timestamp="20170429 17:28:40.532" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: IP removed successfully on ASW02 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.532" html="yes" level="INFO">login to ASW03 and remove IP address </msg>
+<msg timestamp="20170429 17:28:40.532" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: IP removed successfully on ASW03 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.533" html="yes" level="INFO">login to ASW04 and remove IP address </msg>
+<msg timestamp="20170429 17:28:40.533" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: IP removed successfully on ASW04 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.533" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: IP removed successfully &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.533" level="INFO">${out} = True</msg>
+<status status="PASS" endtime="20170429 17:28:40.533" starttime="20170429 17:28:40.527"></status>
+</kw>
+<kw name="Should Be True" library="BuiltIn">
+<doc>Fails if the given condition is not true.</doc>
+<arguments>
+<arg>${out}</arg>
+</arguments>
+<status status="PASS" endtime="20170429 17:28:40.533" starttime="20170429 17:28:40.533"></status>
+</kw>
+<kw name="Checkpoint" library="OpenSnaprouteCliDriver">
+<doc>Print the Checkpoint</doc>
+<arguments>
+<arg>removing BGP and verifying</arg>
+</arguments>
+<msg timestamp="20170429 17:28:40.534" html="yes" level="INFO">&lt;font color="blue"&gt;&lt;strong&gt; CHECKPOINT: &lt;/strong&gt; *** removing BGP and verifying &lt;/font&gt;</msg>
+<status status="PASS" endtime="20170429 17:28:40.534" starttime="20170429 17:28:40.533"></status>
+</kw>
+<kw name="Remove Bgp" library="OpenSnaprouteCliDriver">
+<doc>Removes the bgp IPv4 neighbor address from the routers using SDK function</doc>
+<arguments>
+<arg>${device_all}</arg>
+<arg>${fab_count}</arg>
+<arg>${csw_count}</arg>
+<arg>${asw_count}</arg>
+<arg>${fab}</arg>
+<arg>${csw}</arg>
+<arg>${asw}</arg>
+<arg>${interface_ip_dict}</arg>
+<arg>${asnum}</arg>
+<arg>${routerid}</arg>
+</arguments>
+<assign>
+<var>${out}</var>
+</assign>
+<msg timestamp="20170429 17:28:40.534" html="yes" level="INFO">log-in to FAB05 and removing BGP configuration</msg>
+<msg timestamp="20170429 17:28:40.534" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: BGP is removed successfully on FAB05 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.535" html="yes" level="INFO">log-in to FAB06 and removing BGP configuration</msg>
+<msg timestamp="20170429 17:28:40.535" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: BGP is removed successfully on FAB06 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.535" html="yes" level="INFO">log-in to FAB07 and removing BGP configuration</msg>
+<msg timestamp="20170429 17:28:40.535" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: BGP is removed successfully on FAB07 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.535" html="yes" level="INFO">log-in to FAB08 and removing BGP configuration</msg>
+<msg timestamp="20170429 17:28:40.535" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: BGP is removed successfully on FAB08 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.535" html="yes" level="INFO">log-in to CSW01 and removing BGP configuration</msg>
+<msg timestamp="20170429 17:28:40.535" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: BGP is removed successfully on CSW01 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.536" html="yes" level="INFO">log-in to CSW02 and removing BGP configuration</msg>
+<msg timestamp="20170429 17:28:40.536" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: BGP is removed successfully on CSW02 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.536" html="yes" level="INFO">log-in to CSW03 and removing BGP configuration</msg>
+<msg timestamp="20170429 17:28:40.536" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: BGP is removed successfully on CSW03 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.536" html="yes" level="INFO">log-in to CSW04 and removing BGP configuration</msg>
+<msg timestamp="20170429 17:28:40.536" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: BGP is removed successfully on CSW04 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.536" html="yes" level="INFO">log-in to CSW05 and removing BGP configuration</msg>
+<msg timestamp="20170429 17:28:40.536" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: BGP is removed successfully on CSW05 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.536" html="yes" level="INFO">log-in to CSW06 and removing BGP configuration</msg>
+<msg timestamp="20170429 17:28:40.537" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: BGP is removed successfully on CSW06 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.537" html="yes" level="INFO">log-in to CSW07 and removing BGP configuration</msg>
+<msg timestamp="20170429 17:28:40.537" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: BGP is removed successfully on CSW07 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.537" html="yes" level="INFO">log-in to CSW08 and removing BGP configuration</msg>
+<msg timestamp="20170429 17:28:40.537" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: BGP is removed successfully on CSW08 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.537" html="yes" level="INFO">log-in to ASW01 and removing BGP configuration</msg>
+<msg timestamp="20170429 17:28:40.537" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: BGP is removed successfully on ASW01 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.537" html="yes" level="INFO">log-in to ASW02 and removing BGP configuration</msg>
+<msg timestamp="20170429 17:28:40.538" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: BGP is removed successfully on ASW02 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.538" html="yes" level="INFO">log-in to ASW03 and removing BGP configuration</msg>
+<msg timestamp="20170429 17:28:40.538" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: BGP is removed successfully on ASW03 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.538" html="yes" level="INFO">log-in to ASW04 and removing BGP configuration</msg>
+<msg timestamp="20170429 17:28:40.538" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: BGP is removed successfully on ASW04 &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.538" html="yes" level="INFO">&lt;font color="green"&gt;&lt;b&gt; PASS: BGP is removed successfully &lt;/b&gt;&lt;/font&gt;</msg>
+<msg timestamp="20170429 17:28:40.538" level="INFO">${out} = True</msg>
+<status status="PASS" endtime="20170429 17:28:40.538" starttime="20170429 17:28:40.534"></status>
+</kw>
+<kw name="Should Be True" library="BuiltIn">
+<doc>Fails if the given condition is not true.</doc>
+<arguments>
+<arg>${out}</arg>
+</arguments>
+<status status="PASS" endtime="20170429 17:28:40.539" starttime="20170429 17:28:40.538"></status>
+</kw>
+<status status="PASS" endtime="20170429 17:28:40.539" starttime="20170429 17:28:40.527"></status>
+</kw>
+<status status="PASS" endtime="20170429 17:28:40.539" starttime="20170429 17:28:40.526"></status>
+</kw>
+<doc>Test Suite ID : LINKED_IN_ST_01
+
+Test Suite Name : OpenSnaproute_ST_02
+
+Created : 20-Nov-2016
+
+Status : Completed
+
+@authors : TERRALOGIC TEAM
+
+Abstract : This test suite examines the basic functionalities of OpenSnaproute using "Dockers Setup"
+
+Test-cases List : 1.Verify IPv4 BGP on all devices.
+: 2.Manually clear BGP routing process. Measure convergence time and verify system status.
+: 3.Trigger link failure and link recovery. Measure convergence time and verify system. status.</doc>
+<status status="FAIL" endtime="20170429 17:28:40.539" starttime="20170429 17:27:23.329">Suite setup failed:
+Execution terminated by signal</status>
+</suite>
+<statistics>
+<total>
+<stat fail="3" pass="0">Critical Tests</stat>
+<stat fail="3" pass="0">All Tests</stat>
+</total>
+<tag>
+<stat info="combined" fail="0" combined="NOT robot-exit" pass="0">NOT robot-exit</stat>
+<stat fail="3" pass="0">robot-exit</stat>
+</tag>
+<suite>
+<stat fail="3" id="s1" name="OpenSnaproute ST" pass="0">OpenSnaproute ST</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

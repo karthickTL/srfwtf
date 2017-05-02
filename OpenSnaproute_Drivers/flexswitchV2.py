@@ -5,7 +5,7 @@ flexswitchv2.py
 import requests
 import json
 import urllib2
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
+#from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 HEADERS = {'Accept': 'application/json', 'Content-Type': 'application/json'}
 PATCHHEADERS = {'Conent-Type': 'application/json-patch+json'}
@@ -47,7 +47,7 @@ class FlexSwitch(object):
                 'Action': action,
                 'MatchConditions': match_conditions,
                 }
-        req_url = self.cfg_url_base+'PolicyStmt'
+        req_url = self.cfg_url_base + 'PolicyStmt'
         if self.authenticate:
             r = requests.post(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -69,7 +69,7 @@ class FlexSwitch(object):
                 'UntagIntfList': untag_intf_list,
                 'AdminState': admin_state,
                 }
-        req_url = self.cfg_url_base+'Vlan'
+        req_url = self.cfg_url_base + 'Vlan'
         if self.authenticate:
             r = requests.post(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -80,7 +80,7 @@ class FlexSwitch(object):
         obj = {
                 'VlanId': vlan_id,
                 }
-        req_url = self.cfg_url_base+'Vlan'
+        req_url = self.cfg_url_base + 'Vlan'
         if self.authenticate:
             r = requests.delete(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -105,11 +105,11 @@ class FlexSwitch(object):
         if admin_state is not None:
             obj['AdminState'] = admin_state
 
-        req_url = self.cfg_url_base+'Vlan'
-        if self.authenticate:
-            r = requests.patch(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
+        req_url = self.cfg_url_base + 'Vlan'
+        if self.authenticate: 
+           r = requests.patch(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
-            r = requests.patch(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout)
+             r = requests.patch(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout)
         return r
 
     def get_all_bgpv4_neighbor_states(self):
@@ -200,7 +200,7 @@ class FlexSwitch(object):
                 'HoldTime': int(hold_time),
                 'ConnectRetryTime': int(connect_retry_time),
                 }
-        req_url = self.cfg_url_base+'BGPv4Neighbor'
+        req_url = self.cfg_url_base + 'BGPv4Neighbor'
         if self.authenticate:
             r = requests.post(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -212,7 +212,7 @@ class FlexSwitch(object):
                 'IntfRef': intf_ref,
                 'NeighborAddress': neighbor_address,
                 }
-        req_url = self.cfg_url_base+'BGPv4Neighbor'
+        req_url = self.cfg_url_base + 'BGPv4Neighbor'
         if self.authenticate:
             r = requests.delete(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -325,7 +325,7 @@ class FlexSwitch(object):
         if connect_retry_time is not None:
             obj['ConnectRetryTime'] = int(connect_retry_time)
 
-        req_url = self.cfg_url_base+'BGPv4Neighbor'
+        req_url = self.cfg_url_base + 'BGPv4Neighbor'
         if self.authenticate:
             r = requests.patch(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -369,7 +369,7 @@ class FlexSwitch(object):
                 'RequiredMinEchoRxInterval': int(required_min_echo_rx_interval),
                 'LocalMultiplier': int(local_multiplier),
                 }
-        req_url = self.cfg_url_base+'BfdSessionParam'
+        req_url = self.cfg_url_base + 'BfdSessionParam'
         if self.authenticate:
             r = requests.post(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -380,7 +380,7 @@ class FlexSwitch(object):
         obj = {
                 'Name': name,
                 }
-        req_url = self.cfg_url_base+'BfdSessionParam'
+        req_url = self.cfg_url_base + 'BfdSessionParam'
         if self.authenticate:
             r = requests.delete(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -409,7 +409,7 @@ class FlexSwitch(object):
                 'MatchType': match_type,
                 'PolicyType': policy_type,
                 }
-        req_url = self.cfg_url_base+'PolicyDefinition'
+        req_url = self.cfg_url_base + 'PolicyDefinition'
         if self.authenticate:
             r = requests.post(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -427,7 +427,7 @@ class FlexSwitch(object):
                 'Name': name,
                 'Type': type,
                 }
-        req_url = self.cfg_url_base+'LogicalIntf'
+        req_url = self.cfg_url_base + 'LogicalIntf'
         if self.authenticate:
             r = requests.post(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -438,7 +438,7 @@ class FlexSwitch(object):
         obj = {
                 'Name': name,
                 }
-        req_url = self.cfg_url_base+'LogicalIntf'
+        req_url = self.cfg_url_base + 'LogicalIntf'
         if self.authenticate:
             r = requests.delete(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -518,7 +518,7 @@ class FlexSwitch(object):
                 'HoldTime': int(hold_time),
                 'ConnectRetryTime': int(connect_retry_time),
                 }
-        req_url = self.cfg_url_base+'BGPv4PeerGroup'
+        req_url = self.cfg_url_base + 'BGPv4PeerGroup'
         if self.authenticate:
             r = requests.post(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -529,7 +529,7 @@ class FlexSwitch(object):
         obj = {
                 'Name': name,
                 }
-        req_url = self.cfg_url_base+'BGPv4PeerGroup'
+        req_url = self.cfg_url_base + 'BGPv4PeerGroup'
         if self.authenticate:
             r = requests.delete(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -549,7 +549,7 @@ class FlexSwitch(object):
                 'IpAddr': ip_addr,
                 'AdminState': admin_state,
                 }
-        req_url = self.cfg_url_base+'IPv4Intf'
+        req_url = self.cfg_url_base + 'IPv4Intf'
         if self.authenticate:
             r = requests.post(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -560,7 +560,7 @@ class FlexSwitch(object):
         obj = {
                 'IntfRef': intf_ref,
                 }
-        req_url = self.cfg_url_base+'IPv4Intf'
+        req_url = self.cfg_url_base + 'IPv4Intf'
         if self.authenticate:
             r = requests.delete(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -592,7 +592,7 @@ class FlexSwitch(object):
         if ebgp_allow_multiple_as is not None:
             obj['EBGPAllowMultipleAS'] = True if ebgp_allow_multiple_as else False
 
-        if router_idId is not None:
+        if router_id is not None:
             obj['RouterId'] = router_id
 
         if ibgp_max_paths is not None:
@@ -601,7 +601,7 @@ class FlexSwitch(object):
         if redistribution is not None:
             obj['Redistribution'] = redistribution
 
-        req_url = self.cfg_url_base+'BGPGlobal'
+        req_url = self.cfg_url_base + 'BGPGlobal'
         if self.authenticate:
             r = requests.patch(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -630,7 +630,7 @@ class FlexSwitch(object):
         if tranmit_interval is not None:
             obj['TranmitInterval'] = int(tranmit_interval)
 
-        req_url = self.cfg_url_base+'LLDPGlobal'
+        req_url = self.cfg_url_base + 'LLDPGlobal'
         if self.authenticate:
             r = requests.patch(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -735,7 +735,7 @@ class FlexSwitch(object):
                 'HoldTime': int(hold_time),
                 'ConnectRetryTime': int(connect_retry_time),
                 }
-        req_url = self.cfg_url_base+'BGPv6Neighbor'
+        req_url = self.cfg_url_base + 'BGPv6Neighbor'
         if self.authenticate:
             r = requests.post(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -747,7 +747,7 @@ class FlexSwitch(object):
                 'IntfRef': intf_ref,
                 'NeighborAddress': neighbor_address,
                 }
-        req_url = self.cfg_url_base+'BGPv6Neighbor'
+        req_url = self.cfg_url_base + 'BGPv6Neighbor'
         if self.authenticate:
             r = requests.delete(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -779,7 +779,7 @@ class FlexSwitch(object):
                 'NullRoute': True if null_route else False,
                 'Cost': int(cost),
                 }
-        req_url = self.cfg_url_base+'IPv4Route'
+        req_url = self.cfg_url_base + 'IPv4Route'
         if self.authenticate:
             r = requests.post(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -801,7 +801,7 @@ class FlexSwitch(object):
                 'AdminState': admin_state,
                 'LinkIp': True if link_ip else False,
                 }
-        req_url = self.cfg_url_base+'IPv6Intf'
+        req_url = self.cfg_url_base + 'IPv6Intf'
         if self.authenticate:
             r = requests.post(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -812,7 +812,7 @@ class FlexSwitch(object):
         obj = {
                 'IntfRef': intf_ref,
                 }
-        req_url = self.cfg_url_base+'IPv6Intf'
+        req_url = self.cfg_url_base + 'IPv6Intf'
         if self.authenticate:
             r = requests.delete(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -844,7 +844,7 @@ class FlexSwitch(object):
                 'MaskLengthRange': mask_length_range,
                 'PrefixSet': prefix_set,
                 }
-        req_url = self.cfg_url_base+'PolicyCondition'
+        req_url = self.cfg_url_base + 'PolicyCondition'
         if self.authenticate:
             r = requests.post(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
@@ -921,7 +921,7 @@ class FlexSwitch(object):
         if prbs_tx_enable is not None:
             obj['PRBSTxEnable'] = True if prbs_tx_enable else False
 
-        req_url = self.cfg_url_base+'Port'
+        req_url = self.cfg_url_base + 'Port'
         if self.authenticate:
             r = requests.patch(req_url, data=json.dumps(obj), headers=HEADERS, timeout=self.timeout, auth=(self.user, self.passwd), verify=False)
         else:
